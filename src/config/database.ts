@@ -2,6 +2,9 @@ import { Sequelize } from 'sequelize-typescript';
 import path from 'path';
 import dotenv from 'dotenv';
 import pg from "pg"
+import Pdf from '../models/inventory.model';
+import News from "../models/news.model"
+import Users from "../models/user.model"
 
 dotenv.config();
 
@@ -12,7 +15,7 @@ const sequelize = new Sequelize({
   database: process.env.DB_NAME,
   username: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  models: [path.join(__dirname, '../models/*.model.ts')], // Asegúrate de que la ruta sea correcta
+  models: [Pdf,Users,News], // Asegúrate de que la ruta sea correcta
   logging: false,
   dialectModule: pg,
   dialectOptions: {
