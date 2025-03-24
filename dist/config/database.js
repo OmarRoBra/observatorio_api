@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_typescript_1 = require("sequelize-typescript");
 const path_1 = __importDefault(require("path"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const pg_1 = __importDefault(require("pg"));
 dotenv_1.default.config();
 const sequelize = new sequelize_typescript_1.Sequelize({
     dialect: 'postgres',
@@ -16,6 +17,7 @@ const sequelize = new sequelize_typescript_1.Sequelize({
     password: process.env.DB_PASSWORD,
     models: [path_1.default.join(__dirname, '../models/*.model.ts')], // Asegúrate de que la ruta sea correcta
     logging: false,
+    dialectModule: pg_1.default,
     dialectOptions: {
         ssl: {
             require: true, // This will help you. But you will see nwe error

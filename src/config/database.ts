@@ -1,6 +1,7 @@
 import { Sequelize } from 'sequelize-typescript';
 import path from 'path';
 import dotenv from 'dotenv';
+import pg from "pg"
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ const sequelize = new Sequelize({
   password: process.env.DB_PASSWORD,
   models: [path.join(__dirname, '../models/*.model.ts')], // Asegúrate de que la ruta sea correcta
   logging: false,
+  dialectModule: pg,
   dialectOptions: {
     ssl: {
       require: true, // This will help you. But you will see nwe error
