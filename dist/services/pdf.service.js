@@ -1,3 +1,4 @@
+"use strict";
 /* import PDFDocument from 'pdfkit';
 import { News } from '../models/news.model';
 
@@ -30,4 +31,4 @@ export default class PdfService {
 
     return doc;
   }
-} */
+} */ 

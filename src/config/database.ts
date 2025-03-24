@@ -12,7 +12,13 @@ const sequelize = new Sequelize({
   username: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   models: [path.join(__dirname, '../models/*.model.ts')], // Asegúrate de que la ruta sea correcta
-  logging: false
+  logging: false,
+  dialectOptions: {
+    ssl: {
+      require: true, // This will help you. But you will see nwe error
+      rejectUnauthorized: false // This line will fix new error
+    }
+  },
 });
 
 export default sequelize;

@@ -1,4 +1,5 @@
-/* 
+"use strict";
+/*
 // export default class ExcelService {
   static async generateNewsReport(news: News[]) {
    const workbook = new ExcelJS.Workbook();
@@ -29,4 +30,4 @@
 
     return workbook;
   }
-} */
+} */ 
