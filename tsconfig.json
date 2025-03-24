@@ -4,7 +4,7 @@
       "module": "commonjs",
       "esModuleInterop": true,
       "strict": true,
-      "outDir": "./public",
+      "outDir": "./dist",
       "rootDir": "./src",
       "typeRoots": ["./node_modules/@types", "./src/types"],
       "experimentalDecorators": true,
