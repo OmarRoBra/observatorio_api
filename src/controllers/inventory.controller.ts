@@ -1,45 +1,58 @@
 import { Request, Response } from 'express';
 import Pdf from '../models/inventory.model';
-import multer from 'multer';
-import path from 'path';
 
-// Configuración de multer para guardar archivos PDF
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, '../../uploads/pdfs')); // Guardar archivos en la carpeta "uploads/pdfs"
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`); // Nombre del archivo: timestamp + nombre original
-  },
-});
-
-const upload = multer({ storage });
-
-// Subir un archivo PDF
-export const uploadPdf = async (req: Request, res: Response) => {
+export const uploadPdf = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { title } = req.body;
+    const { title, fileUrl } = req.body;
 
-    if (!req.file) {
-      res.status(400).json({ message: 'No se proporcionó un archivo PDF' });
-      return; // Asegúrate de salir de la función después de enviar la respuesta
+    if (!title || !fileUrl) {
+      res.status(400).json({ 
+        message: 'Title and file URL are required' 
+      });
+      return;
     }
 
-    const fileUrl = `/uploads/pdf/${req.file.filename}`;
     const pdf = await Pdf.create({ title, fileUrl });
-
-    res.status(201).json(pdf); // Envía la respuesta sin devolverla
+    res.status(201).json(pdf);
   } catch (error) {
-    res.status(500).json({ message: 'Error al subir el archivo PDF', error });
+    console.error('Error saving PDF:', error);
+    res.status(500).json({ 
+      message: 'Error saving PDF information',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
   }
 };
 
-// Obtener todos los archivos PDF
-export const getPdfs = async (req: Request, res: Response) => {
+export const getPdfs = async (req: Request, res: Response): Promise<void> => {
   try {
     const pdfs = await Pdf.findAll();
-    res.json(pdfs); // Envía la respuesta sin devolverla
+    res.json(pdfs);
   } catch (error) {
-    res.status(500).json({ message: 'Error al obtener los archivos PDF', error });
+    console.error('Error fetching PDFs:', error);
+    res.status(500).json({ 
+      message: 'Error getting PDFs',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
   }
-};  
+};
+
+export const deletePdf = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+
+    const pdf = await Pdf.findByPk(id);
+    if (!pdf) {
+      res.status(404).json({ message: 'PDF not found' });
+      return;
+    }
+
+    await pdf.destroy();
+    res.json({ message: 'PDF deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting PDF:', error);
+    res.status(500).json({ 
+      message: 'Error deleting PDF',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+};

@@ -1,19 +1,19 @@
-import express, { Router } from 'express';
+import express from 'express';
 import { 
   createNews, 
   getAllNews, 
   getNewsById, 
   updateNews, 
   deleteNews,
-  uploadMiddleware
 } from '../controllers/news.controller';
 
-const router: Router = express.Router();
+const router = express.Router();
 
-router.post('/', uploadMiddleware, createNews);
+// Note: We removed the upload middleware since files are now uploaded directly to Supabase
+router.post('/', createNews);
 router.get('/', getAllNews);
 router.get('/:id', getNewsById);
-router.put('/:id', uploadMiddleware, updateNews);
+router.put('/:id', updateNews);
 router.delete('/:id', deleteNews);
 
 export default router;

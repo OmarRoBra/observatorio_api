@@ -1,13 +1,10 @@
 import express from 'express';
-import { uploadPdf, getPdfs } from '../controllers/inventory.controller';
-import { uploadPdf as pdfmiddleware } from '../middleware/uploadMiddleware';
+import { uploadPdf, getPdfs,deletePdf } from '../controllers/inventory.controller';
 
 const router = express.Router();
 
-// Subir un archivo PDF
-router.post('/pdfs', pdfmiddleware.single('file'), uploadPdf);
-
-// Obtener todos los archivos PDF
-router.get('/pdfs', getPdfs);
+router.post('/', uploadPdf);
+router.get('/', getPdfs);
+router.delete('/:id', deletePdf);
 
 export default router;

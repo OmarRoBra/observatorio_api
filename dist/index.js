@@ -18,9 +18,7 @@ const user_routes_1 = __importDefault(require("./routes/user.routes"));
 const news_routes_1 = __importDefault(require("./routes/news.routes"));
 const inventory_routes_1 = __importDefault(require("./routes/inventory.routes"));
 const database_1 = __importDefault(require("./config/database"));
-const path_1 = __importDefault(require("path"));
 const cors_1 = __importDefault(require("cors"));
-const supabase_1 = require("./config/supabase");
 const app = (0, express_1.default)();
 const port = process.env.PORT || 3000;
 app.use((0, cors_1.default)());
@@ -31,7 +29,6 @@ app.use("/news", news_routes_1.default);
 app.use("/auth", auth_routes_1.default);
 app.use("/user", user_routes_1.default);
 app.use("/inventory", inventory_routes_1.default);
-app.use("/uploads", express_1.default.static(path_1.default.join(__dirname, "uploads")));
 function initializeDatabase() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -44,25 +41,7 @@ function initializeDatabase() {
         }
     });
 }
-// Inicialización de Supabase
-function initializeSupabase() {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const { error } = yield supabase_1.supabase
-                .storage
-                .getBucket('news-images');
-            if (error && error.message !== 'Bucket already exists') {
-                throw error;
-            }
-            console.log('Supabase Storage ready');
-        }
-        catch (error) {
-            console.error('Error initializing Supabase:', error);
-        }
-    });
-}
 initializeDatabase();
-initializeSupabase();
 app.get("/", (req, res) => {
     res.send("Hello, World!");
 });

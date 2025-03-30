@@ -12,45 +12,60 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPdfs = exports.uploadPdf = void 0;
+exports.deletePdf = exports.getPdfs = exports.uploadPdf = void 0;
 const inventory_model_1 = __importDefault(require("../models/inventory.model"));
-const multer_1 = __importDefault(require("multer"));
-const path_1 = __importDefault(require("path"));
-// Configuración de multer para guardar archivos PDF
-const storage = multer_1.default.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, path_1.default.join(__dirname, '../../uploads/pdfs')); // Guardar archivos en la carpeta "uploads/pdfs"
-    },
-    filename: (req, file, cb) => {
-        cb(null, `${Date.now()}-${file.originalname}`); // Nombre del archivo: timestamp + nombre original
-    },
-});
-const upload = (0, multer_1.default)({ storage });
-// Subir un archivo PDF
 const uploadPdf = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { title } = req.body;
-        if (!req.file) {
-            res.status(400).json({ message: 'No se proporcionó un archivo PDF' });
-            return; // Asegúrate de salir de la función después de enviar la respuesta
+        const { title, fileUrl } = req.body;
+        if (!title || !fileUrl) {
+            res.status(400).json({
+                message: 'Title and file URL are required'
+            });
+            return;
         }
-        const fileUrl = `/uploads/pdf/${req.file.filename}`;
         const pdf = yield inventory_model_1.default.create({ title, fileUrl });
-        res.status(201).json(pdf); // Envía la respuesta sin devolverla
+        res.status(201).json(pdf);
     }
     catch (error) {
-        res.status(500).json({ message: 'Error al subir el archivo PDF', error });
+        console.error('Error saving PDF:', error);
+        res.status(500).json({
+            message: 'Error saving PDF information',
+            error: error instanceof Error ? error.message : 'Unknown error'
+        });
     }
 });
 exports.uploadPdf = uploadPdf;
-// Obtener todos los archivos PDF
 const getPdfs = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const pdfs = yield inventory_model_1.default.findAll();
-        res.json(pdfs); // Envía la respuesta sin devolverla
+        res.json(pdfs);
     }
     catch (error) {
-        res.status(500).json({ message: 'Error al obtener los archivos PDF', error });
+        console.error('Error fetching PDFs:', error);
+        res.status(500).json({
+            message: 'Error getting PDFs',
+            error: error instanceof Error ? error.message : 'Unknown error'
+        });
     }
 });
 exports.getPdfs = getPdfs;
+const deletePdf = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const pdf = yield inventory_model_1.default.findByPk(id);
+        if (!pdf) {
+            res.status(404).json({ message: 'PDF not found' });
+            return;
+        }
+        yield pdf.destroy();
+        res.json({ message: 'PDF deleted successfully' });
+    }
+    catch (error) {
+        console.error('Error deleting PDF:', error);
+        res.status(500).json({
+            message: 'Error deleting PDF',
+            error: error instanceof Error ? error.message : 'Unknown error'
+        });
+    }
+});
+exports.deletePdf = deletePdf;
