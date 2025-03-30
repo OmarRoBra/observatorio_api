@@ -6,6 +6,7 @@ import inventoryRoutes from "./routes/inventory.routes";
 import sequelize from "./config/database";
 import path from "path";
 import cors from "cors";
+import { supabase } from "./config/supabase";
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -32,7 +33,25 @@ async function initializeDatabase() {
   }
 }
 
+// Inicialización de Supabase
+async function initializeSupabase() {
+  try {
+    const { error } = await supabase
+      .storage
+      .getBucket('news-images');
+    
+    if (error && error.message !== 'Bucket already exists') {
+      throw error;
+    }
+    
+    console.log('Supabase Storage ready');
+  } catch (error) {
+    console.error('Error initializing Supabase:', error);
+  }
+}
+
 initializeDatabase();
+initializeSupabase();
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello, World!");
