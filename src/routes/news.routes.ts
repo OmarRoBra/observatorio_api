@@ -8,6 +8,6 @@ router.post('/', uploadImage.single('image'), createNews);
 router.get('/', getAllNews);
 router.get('/:id', getNewsById);
 router.put('/:id', uploadImage.single('image'), updateNews);
-router.delete('/:id', deleteNews);
+
 
 export default router;

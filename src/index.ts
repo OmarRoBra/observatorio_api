@@ -4,6 +4,8 @@ import userRoutes from "./routes/user.routes";
 import newsRoutes from "./routes/news.routes";
 import inventoryRoutes from "./routes/inventory.routes";
 import sequelize from "./config/database";
+import excelRoutes from './routes/excel.routes';
+
 import path from "path";
 import cors from "cors";
 const app = express();
@@ -19,6 +21,8 @@ app.use("/news", newsRoutes);
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
 app.use("/inventory", inventoryRoutes);
+app.use('/excel', excelRoutes);
+
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
