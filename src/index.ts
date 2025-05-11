@@ -11,8 +11,9 @@ import cors from "cors";
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(cors());
-
+app.use(cors({
+  origin: "https://observatorio-colima-6yfm-git-main-brauliorodriguez23s-projects.vercel.app/" // Reemplaza con tu URL
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -21,8 +22,10 @@ app.use("/news", newsRoutes);
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
 app.use("/inventory", inventoryRoutes);
-app.use('/excel', excelRoutes);
-
+// En tu index.ts (backend)
+ // Prefijo /api/excel
+// Asegúrate de que la ruta esté montada correctamente
+app.use('/excel', excelRoutes); // ✔️ Debe coincidir con la URL del frontend
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 

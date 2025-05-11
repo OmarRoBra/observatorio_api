@@ -1,10 +1,18 @@
+// src/routes/excel.routes.ts
 import { Router } from 'express';
-import { upload } from '../config/multer';
-import { authMiddleware, adminOnly } from '../middleware/auth.middleware';
-import { uploadExcel, getExcelData, downloadExcel } from '../controllers/excel.controller';
+import { upload, listFiles, getData, remove } from '../controllers/excel.controller';
+import { uploadExcel } from '../middleware/uploadMiddleware';
 
 const router = Router();
-router.post('/upload',   authMiddleware, adminOnly, upload.single('file'), uploadExcel);
-router.get('/:id/data',  authMiddleware, getExcelData);
-router.get('/:id/download', authMiddleware, downloadExcel);
+// src/routes/excel.routes.ts
+// src/routes/excel.routes.ts
+router.post(
+  '/upload', 
+  uploadExcel.single('file'), // Middleware de Multer
+  upload                      // Controlador
+); // Sin coma extra
+router.get('/', listFiles);
+router.get('/:id/data', getData);
+router.delete('/:id', remove);
+
 export default router;

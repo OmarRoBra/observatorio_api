@@ -1,10 +1,8 @@
+// backend/config/database.ts
 import { Sequelize } from 'sequelize-typescript';
 import path from 'path';
 import dotenv from 'dotenv';
-import pg from "pg"
-import Pdf from '../models/inventory.model';
-import News from "../models/news.model"
-import Users from "../models/user.model"
+import pg from 'pg';
 
 dotenv.config();
 
@@ -15,14 +13,19 @@ const sequelize = new Sequelize({
   database: process.env.DB_NAME,
   username: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  models: [Pdf,Users,News], // Asegúrate de que la ruta sea correcta
+  models: [
+    path.resolve(__dirname, '../models/inventory.model.js'),
+    path.resolve(__dirname, '../models/user.model.js'),
+    path.resolve(__dirname, '../models/news.model.js'),
+    path.resolve(__dirname,'../models/excel-file.model.ts')
+  ],
   logging: false,
   dialectModule: pg,
   dialectOptions: {
     ssl: {
-      require: true, // This will help you. But you will see nwe error
-      rejectUnauthorized: false // This line will fix new error
-    }
+      require: true,
+      rejectUnauthorized: false,
+    },
   },
 });
 

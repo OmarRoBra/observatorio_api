@@ -1,16 +1,15 @@
+// src/config/multer.ts
 import multer from 'multer';
 import path from 'path';
 
-// Configuración de almacenamiento en disco
+// Carpeta de destino
 const storage = multer.diskStorage({
-  destination: 'uploads/',                      // Carpeta donde se guardan los archivos
-  filename: (_req, file, cb) => {
-    const ext = path.extname(file.originalname);
+  destination: (req, file, cb) => cb(null, 'uploads/'),
+  filename:    (req, file, cb) => {
+    const ext  = path.extname(file.originalname);
     const name = path.basename(file.originalname, ext);
-    // Genera un nombre único con timestamp
-    cb(null, `${name}-${Date.now()}${ext}`);
+    cb(null, `${Date.now()}-${name}${ext}`);
   }
 });
 
-// Exportamos el middleware listo para usarse
 export const upload = multer({ storage });
