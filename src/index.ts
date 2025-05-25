@@ -23,6 +23,7 @@ app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
 app.use('/inventory', inventoryRoutes);
 app.use('/info-injection', excelInfo);
+
 async function initializeDatabase() {
   try {
     await sequelize.authenticate(); // Verificar la conexión

@@ -17,6 +17,7 @@ const auth_routes_1 = __importDefault(require("./routes/auth.routes"));
 const user_routes_1 = __importDefault(require("./routes/user.routes"));
 const news_routes_1 = __importDefault(require("./routes/news.routes"));
 const inventory_routes_1 = __importDefault(require("./routes/inventory.routes"));
+const excelFeed_1 = __importDefault(require("./routes/excelFeed"));
 const database_1 = __importDefault(require("./config/database"));
 const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
@@ -25,25 +26,26 @@ app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 // Routes
-app.use("/news", news_routes_1.default);
-app.use("/auth", auth_routes_1.default);
-app.use("/user", user_routes_1.default);
-app.use("/inventory", inventory_routes_1.default);
+app.use('/news', news_routes_1.default);
+app.use('/auth', auth_routes_1.default);
+app.use('/user', user_routes_1.default);
+app.use('/inventory', inventory_routes_1.default);
+app.use('/info-injection', excelFeed_1.default);
 function initializeDatabase() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             yield database_1.default.authenticate(); // Verificar la conexión
             yield database_1.default.sync(); // Sincronizar modelos con la base de datos
-            console.log("Base de datos sincronizada correctamente.");
+            console.log('Base de datos sincronizada correctamente.');
         }
         catch (error) {
-            console.error("Error al sincronizar la base de datos:", error);
+            console.error('Error al sincronizar la base de datos:', error);
         }
     });
 }
 initializeDatabase();
-app.get("/", (req, res) => {
-    res.send("Hello, World!");
+app.get('/', (req, res) => {
+    res.send('Hello, World!');
 });
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
