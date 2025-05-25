@@ -20,4 +20,10 @@ export default class Pdf extends Model {
     allowNull: false,
   })
   fileUrl!: string; // Ruta del archivo PDF en el servidor
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  category!: string; // Categoría del PDF (temporada, destino, anual)
 }

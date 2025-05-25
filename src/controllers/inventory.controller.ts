@@ -3,17 +3,17 @@ import Pdf from '../models/inventory.model';
 
 export const uploadPdf = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { title, fileUrl } = req.body;
+    const { title, fileUrl, category } = req.body;
 
-    if (!title || !fileUrl) {
+    if (!title || !fileUrl || !category) {
       res.status(400).json({ 
-        message: 'Title and file URL are required' 
+        message: 'Title, file URL, and category are required' 
       });
       return;
     }
 
-    const pdf = await Pdf.create({ title, fileUrl });
-    res.status(201).json(pdf);
+    const pdf = await Pdf.create({ title, fileUrl, category });
+    res.status(201).json({ ...pdf.toJSON(), url: pdf.fileUrl });
   } catch (error) {
     console.error('Error saving PDF:', error);
     res.status(500).json({ 
@@ -22,11 +22,15 @@ export const uploadPdf = async (req: Request, res: Response): Promise<void> => {
     });
   }
 };
-
+// controllers/inventory.controller.ts
 export const getPdfs = async (req: Request, res: Response): Promise<void> => {
   try {
     const pdfs = await Pdf.findAll();
-    res.json(pdfs);
+    const mappedPdfs = pdfs.map((pdf: any) => {
+      const obj = pdf.toJSON();
+      return { ...obj, url: obj.fileUrl }; // agrega url
+    });
+    res.json(mappedPdfs);
   } catch (error) {
     console.error('Error fetching PDFs:', error);
     res.status(500).json({ 

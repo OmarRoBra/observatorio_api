@@ -20,14 +20,15 @@ export const getUser = async (req: any, res: Response): Promise<void> => {
   }
 };
 
-export const updateUser = async (req: Request, res: Response) => {
+export const updateUser = async (req: Request, res: Response): Promise<void> => {
   const userId = (req as any).userId;
   const { name, email } = req.body;
 
   try {
     const user = await User.findByPk(userId);
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      res.status(404).json({ message: "User not found" });
+      return; // Importante: usar return para detener la ejecución
     }
 
     user.name = name || user.name;
@@ -37,5 +38,23 @@ export const updateUser = async (req: Request, res: Response) => {
     res.json({ message: "User updated", user });
   } catch (error) {
     res.status(500).json({ message: "Error updating user", error });
+  }
+};
+
+// Añadir método para eliminar usuario
+export const deleteUser = async (req: Request, res: Response): Promise<void> => {
+  const userId = (req as any).userId;
+
+  try {
+    const user = await User.findByPk(userId);
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    await user.destroy();
+    res.json({ message: "User deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting user", error });
   }
 };

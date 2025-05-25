@@ -7,6 +7,8 @@ import excelInfo from './routes/excelFeed';
 import sequelize from './config/database';
 import path from 'path';
 import cors from 'cors';
+// observatorio_api/src/index.ts
+export * from './models/HolidayStats.model';
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -36,6 +38,7 @@ initializeDatabase();
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello, World!');
 });
+
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

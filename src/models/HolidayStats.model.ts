@@ -43,4 +43,8 @@ export default class HolidayStats extends Model {
 
   @Column({ type: DataType.INTEGER, allowNull: false })
   touristFlow!: number;
+
+  @Column({ type: DataType.STRING, allowNull: false })
+  month!: string; // Ej: 'Febrero'
+
 }
