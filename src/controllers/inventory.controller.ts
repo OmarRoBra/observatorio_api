@@ -3,6 +3,7 @@ import Pdf from '../models/inventory.model';
 
 export const uploadPdf = async (req: Request, res: Response): Promise<void> => {
   try {
+    console.log('Body recibido:', req.body); 
     const { title, fileUrl, category } = req.body;
 
     if (!title || !fileUrl || !category) {
