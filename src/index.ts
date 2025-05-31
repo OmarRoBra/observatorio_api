@@ -7,6 +7,9 @@ import excelInfo from './routes/excelFeed';
 import sequelize from './config/database';
 import path from 'path';
 import cors from 'cors';
+import monthlyStatsRoutes from './routes/monthlyStats.routes';
+import seasonStatsRoutes from './routes/seasonStats.routes';
+
 // observatorio_api/src/index.ts
 export * from './models/HolidayStats.model';
 const app = express();
@@ -23,6 +26,8 @@ app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
 app.use('/inventory', inventoryRoutes);
 app.use('/info-injection', excelInfo);
+app.use('/monthly-stats', monthlyStatsRoutes);
+app.use('/season-stats', seasonStatsRoutes);
 
 async function initializeDatabase() {
   try {
