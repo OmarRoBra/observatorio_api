@@ -7,8 +7,9 @@ import excelInfo from './routes/excelFeed';
 import sequelize from './config/database';
 import path from 'path';
 import cors from 'cors';
-import monthlyStatsRoutes from './routes/monthlyStats.routes';
-import seasonStatsRoutes from './routes/seasonStats.routes';
+import monthlyStatsRoutes from './routes/monthlyStats.routes.js';
+import seasonStatsRoutes from './routes/seasonStats';
+
 
 // observatorio_api/src/index.ts
 export * from './models/HolidayStats.model';

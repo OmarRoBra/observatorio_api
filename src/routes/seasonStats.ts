@@ -2,11 +2,11 @@ import { Router } from 'express';
 import { upload } from '../middleware/upload';
 import { readExcelFromBuffer } from '../utils/excelReader';
 import { insertMonthlyStatsFromExcel } from '../services/monthlyStatsProcessor';
-import MonthlyStats from '../models/MonthlyStats.model';
+import SeasonStats from '../models/SeasonStats.model';
 
 const router = Router();
 
-router.post('/upload-excel', upload.single('file'), async (req, res) => {
+router.post('/upload-excel', upload.single('archivo'), async (req, res): Promise<void> => {
   try {
     if (!req.file) {
       res.status(400).json({ message: 'Archivo requerido.' });
@@ -21,7 +21,7 @@ router.post('/upload-excel', upload.single('file'), async (req, res) => {
 });
 
 router.get('/', async (req, res) => {
-  const stats = await MonthlyStats.findAll();
+  const stats = await SeasonStats.findAll();
   res.json(stats);
 });
 
