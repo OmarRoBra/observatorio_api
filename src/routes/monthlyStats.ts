@@ -6,19 +6,28 @@ import MonthlyStats from '../models/MonthlyStats.model';
 
 const router = Router();
 
-router.post('/upload-excel', upload.single('file'), async (req, res) => {
-  try {
-    if (!req.file) {
-      res.status(400).json({ message: 'Archivo requerido.' });
-      return;
+router.post(
+  '/upload-excel',
+  upload.single('file'),
+  async (req, res): Promise<void> => {
+    try {
+      if (!req.file) {
+        res.status(400).json({ message: 'Archivo o tipo faltante.' });
+        return;
+      }
+
+      const data = readExcelFromBuffer(req.file.buffer);
+
+      await insertMonthlyStatsFromExcel(data);
+
+      res.status(200).json({ message: `Archivo  procesado correctamente.` });
+    } catch (error) {
+      console.error(error);
+      console.log(error);
+      res.status(500).json({ message: 'Error procesando el archivo.' });
     }
-    const data = readExcelFromBuffer(req.file.buffer);
-    await insertMonthlyStatsFromExcel(data);
-    res.json({ message: 'Archivo procesado correctamente.' });
-  } catch (e) {
-    res.status(500).json({ message: 'Error procesando archivo', error: e });
   }
-});
+);
 
 router.get('/', async (req, res) => {
   console.log("Entrando a /monthly-stats");

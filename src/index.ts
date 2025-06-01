@@ -7,7 +7,7 @@ import excelInfo from './routes/excelFeed';
 import sequelize from './config/database';
 import path from 'path';
 import cors from 'cors';
-import monthlyStatsRoutes from './routes/monthlyStats.routes.js';
+import monthlyStatsRoutes from './routes/monthlyStats';
 import seasonStatsRoutes from './routes/seasonStats';
 
 
