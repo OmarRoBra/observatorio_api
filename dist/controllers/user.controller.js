@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateUser = exports.getUser = void 0;
+exports.deleteUser = exports.updateUser = exports.getUser = void 0;
 const user_model_1 = __importDefault(require("../models/user.model"));
 const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.userId; // Use req.userId
@@ -37,7 +37,8 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     try {
         const user = yield user_model_1.default.findByPk(userId);
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            res.status(404).json({ message: "User not found" });
+            return; // Importante: usar return para detener la ejecución
         }
         user.name = name || user.name;
         user.email = email || user.email;
@@ -49,3 +50,20 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.updateUser = updateUser;
+// Añadir método para eliminar usuario
+const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.userId;
+    try {
+        const user = yield user_model_1.default.findByPk(userId);
+        if (!user) {
+            res.status(404).json({ message: "User not found" });
+            return;
+        }
+        yield user.destroy();
+        res.json({ message: "User deleted successfully" });
+    }
+    catch (error) {
+        res.status(500).json({ message: "Error deleting user", error });
+    }
+});
+exports.deleteUser = deleteUser;

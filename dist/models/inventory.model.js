@@ -34,6 +34,13 @@ __decorate([
     }),
     __metadata("design:type", String)
 ], Pdf.prototype, "fileUrl", void 0);
+__decorate([
+    (0, sequelize_typescript_1.Column)({
+        type: sequelize_typescript_1.DataType.STRING,
+        allowNull: false,
+    }),
+    __metadata("design:type", String)
+], Pdf.prototype, "category", void 0);
 Pdf = __decorate([
     (0, sequelize_typescript_1.Table)({ tableName: 'pdfs' })
 ], Pdf);

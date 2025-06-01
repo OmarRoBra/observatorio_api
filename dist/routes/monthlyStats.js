@@ -12,13 +12,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// src/routes/uexcelFeeds.ts
 const express_1 = require("express");
 const upload_1 = require("../middleware/upload");
 const excelReader_1 = require("../utils/excelReader");
-const sequelize_1 = require("sequelize");
-const HolidayStats_model_1 = __importDefault(require("../models/HolidayStats.model"));
-const uploadInfoExcell_1 = require("../services/uploadInfoExcell");
+const monthlyStatsProcessor_1 = require("../services/monthlyStatsProcessor");
+const MonthlyStats_model_1 = __importDefault(require("../models/MonthlyStats.model"));
 const router = (0, express_1.Router)();
 router.post('/upload-excel', upload_1.upload.single('file'), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -27,7 +25,7 @@ router.post('/upload-excel', upload_1.upload.single('file'), (req, res) => __awa
             return;
         }
         const data = (0, excelReader_1.readExcelFromBuffer)(req.file.buffer);
-        yield (0, uploadInfoExcell_1.insertHolidayStatsFromExcel)(data);
+        yield (0, monthlyStatsProcessor_1.insertMonthlyStatsFromExcel)(data);
         res.status(200).json({ message: `Archivo  procesado correctamente.` });
     }
     catch (error) {
@@ -37,37 +35,15 @@ router.post('/upload-excel', upload_1.upload.single('file'), (req, res) => __awa
     }
 }));
 router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("Entrando a /monthly-stats");
     try {
-        const { year, fromYear, toYear, municipality, bridgeName, month } = req.query;
-        const where = {};
-        if (year || fromYear || toYear) {
-            where.year = {};
-            if (year) {
-                where.year[sequelize_1.Op.eq] = Number(year);
-            }
-            if (fromYear) {
-                where.year[sequelize_1.Op.gte] = Number(fromYear);
-            }
-            if (toYear) {
-                where.year[sequelize_1.Op.lte] = Number(toYear);
-            }
-            if (month) {
-                where.month = { [sequelize_1.Op.iLike]: `%${month}%` };
-            }
-        }
-        if (municipality) {
-            where.municipality = { [sequelize_1.Op.iLike]: `%${municipality}%` };
-        }
-        if (bridgeName) {
-            where.bridgeName = { [sequelize_1.Op.iLike]: `%${bridgeName}%` };
-        }
-        const results = yield HolidayStats_model_1.default.findAll({ where });
-        res.json(results);
+        const stats = yield MonthlyStats_model_1.default.findAll();
+        console.log("Datos de monthly:", stats);
+        res.json(stats || []);
     }
-    catch (err) {
-        console.error('Error fetching holiday stats:', err);
-        res.status(500).json({ error: 'Error fetching holiday stats' });
+    catch (e) {
+        console.error("Error en /monthly-stats:", e);
+        res.status(500).json({ error: "Error en monthly-stats", details: e });
     }
 }));
-// Eliminar una estadística por ID
 exports.default = router;

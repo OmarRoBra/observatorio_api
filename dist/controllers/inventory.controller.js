@@ -16,15 +16,16 @@ exports.deletePdf = exports.getPdfs = exports.uploadPdf = void 0;
 const inventory_model_1 = __importDefault(require("../models/inventory.model"));
 const uploadPdf = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { title, fileUrl } = req.body;
-        if (!title || !fileUrl) {
+        console.log('Body recibido:', req.body);
+        const { title, fileUrl, category } = req.body;
+        if (!title || !fileUrl || !category) {
             res.status(400).json({
-                message: 'Title and file URL are required'
+                message: 'Title, file URL, and category are required'
             });
             return;
         }
-        const pdf = yield inventory_model_1.default.create({ title, fileUrl });
-        res.status(201).json(pdf);
+        const pdf = yield inventory_model_1.default.create({ title, fileUrl, category });
+        res.status(201).json(Object.assign(Object.assign({}, pdf.toJSON()), { url: pdf.fileUrl }));
     }
     catch (error) {
         console.error('Error saving PDF:', error);
@@ -35,10 +36,15 @@ const uploadPdf = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.uploadPdf = uploadPdf;
+// controllers/inventory.controller.ts
 const getPdfs = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const pdfs = yield inventory_model_1.default.findAll();
-        res.json(pdfs);
+        const mappedPdfs = pdfs.map((pdf) => {
+            const obj = pdf.toJSON();
+            return Object.assign(Object.assign({}, obj), { url: obj.fileUrl }); // agrega url
+        });
+        res.json(mappedPdfs);
     }
     catch (error) {
         console.error('Error fetching PDFs:', error);
