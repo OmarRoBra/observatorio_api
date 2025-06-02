@@ -40,3 +40,10 @@ MonthlyStats = __decorate([
     (0, sequelize_typescript_1.Table)({ tableName: 'monthly_stats' })
 ], MonthlyStats);
 exports.default = MonthlyStats;
+// @Column({ type: DataType.INTEGER, allowNull: false }) roomOffer!: number;
+// @Column({ type: DataType.INTEGER, allowNull: false }) roomDemand!: number; 
+// @Column({ type: DataType.INTEGER, allowNull: false }) hotelOccupancyRate!: number;
+// @Column({ type: DataType.INTEGER, allowNull: false }) touristArrivals!: number;
+// @Column({ type: DataType.INTEGER, allowNull: false }) touristDepartures!: number;
+// @Column({ type: DataType.INTEGER, allowNull: false }) averageStayDuration!: number;
+// @Column({ type: DataType.INTEGER, allowNull: false }) tourismRevenue!: number;

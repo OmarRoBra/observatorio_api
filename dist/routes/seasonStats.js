@@ -21,17 +21,16 @@ const router = (0, express_1.Router)();
 router.post('/upload-excel', upload_1.upload.single('file'), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (!req.file) {
-            res.status(400).json({ message: 'Archivo o tipo faltante.' });
+            res.status(400).json({ message: 'Archivo requerido.' });
             return;
         }
         const data = (0, excelReader_1.readExcelFromBuffer)(req.file.buffer);
         yield (0, seasonStatsProcessor_1.insertSeasonStatsFromExcel)(data);
-        res.status(200).json({ message: `Archivo  procesado correctamente.` });
+        res.json({ message: 'Archivo procesado correctamente.' });
     }
-    catch (error) {
-        console.error(error);
-        console.log(error);
-        res.status(500).json({ message: 'Error procesando el archivo.' });
+    catch (e) {
+        console.error("Error en upload-excel:", e);
+        res.status(500).json({ message: 'Error procesando el archivo.', error: e.message, stack: e.stack });
     }
 }));
 router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
