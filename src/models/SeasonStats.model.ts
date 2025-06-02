@@ -13,6 +13,6 @@ export default class SeasonStats extends Model {
   @Column({ type: DataType.FLOAT, allowNull: false }) density!: number;
   @Column({ type: DataType.FLOAT, allowNull: false }) touristsPerNight!: number;
   @Column({ type: DataType.FLOAT, allowNull: false }) avgSpending!: number;
-  @Column({ type: DataType.BIGINT, allowNull: false }) economicImpact!: number;
+  @Column({ type: DataType.FLOAT, allowNull: false }) economicImpact!: number;
   @Column({ type: DataType.FLOAT, allowNull: false }) touristFlow!: number;
 }
