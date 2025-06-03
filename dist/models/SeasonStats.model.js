@@ -57,7 +57,7 @@ __decorate([
     __metadata("design:type", Number)
 ], SeasonStats.prototype, "avgSpending", void 0);
 __decorate([
-    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.BIGINT, allowNull: false }),
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.FLOAT, allowNull: false }),
     __metadata("design:type", Number)
 ], SeasonStats.prototype, "economicImpact", void 0);
 __decorate([

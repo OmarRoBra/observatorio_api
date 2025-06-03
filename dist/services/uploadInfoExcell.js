@@ -18,26 +18,38 @@ function insertHolidayStatsFromExcel(data) {
     return __awaiter(this, void 0, void 0, function* () {
         const formatted = data
             .map((row) => {
-            var _a, _b, _c;
+            var _a;
             const rawEconomicImpact = (_a = row['Derrama Económica']) === null || _a === void 0 ? void 0 : _a.toString().replace(/,/g, '');
             return {
-                year: parseInt(row['Año']),
-                bridgeName: (_b = row['Puente']) === null || _b === void 0 ? void 0 : _b.toString().trim(),
-                municipality: (_c = row['Municipio']) === null || _c === void 0 ? void 0 : _c.toString().trim(),
-                occupancyRate: parseFloat(row['% Ocupación']),
-                roomOffer: parseInt(row['Oferta Cuartos']),
-                occupiedRooms: parseInt(row['Cuartos Ocupados']),
-                availableBeds: parseInt(row['Ctos. Disp.']),
-                stay: parseFloat(row['Estadía']),
-                density: parseFloat(row['Densidad']),
-                nights: parseInt(row['Noches']),
-                touristsPerNight: parseInt(row['Turistas Noche']),
-                gpd: parseFloat(row['GPD']),
-                economicImpact: parseInt(rawEconomicImpact),
-                touristFlow: parseInt(row['Afluencia Turística']),
+                year: parseNumber(row['Año']),
+                bridgeName: row['Fin de semana largo'] || '',
+                municipality: row['Municipio'] || '',
+                occupancyRate: parseFloat(row['Tasa de ocupación']) || 0,
+                roomOffer: parseNumber(row['Oferta cuartos']),
+                occupiedRooms: parseNumber(row['Cuartos ocupados']),
+                availableBeds: parseNumber(row['Cuartos disponibles']),
+                stay: parseFloat(row['Estadía promedio']) || 0,
+                density: parseFloat(row['Densidad de ocupación']) || 0,
+                nights: parseNumber(row['Noches']),
+                touristsPerNight: parseNumber(row['Turistas noche']),
+                gpd: parseFloat(row['Gasto promedio diario']) || 0,
+                economicImpact: parseNumber(row['Derrama económica']),
+                touristFlow: parseNumber(row['Afluencia turística']),
+                month: row['Mes'] || '',
             };
         })
             .filter((row) => row.bridgeName); // Filtra filas incompletas
         yield HolidayStats_model_1.default.bulkCreate(formatted);
     });
+}
+function parseNumber(value) {
+    if (typeof value === 'number')
+        return value;
+    if (typeof value === 'string') {
+        // Remove commas and whitespace, then parse
+        const cleaned = value.replace(/,/g, '').trim();
+        const num = parseFloat(cleaned);
+        return isNaN(num) ? 0 : num;
+    }
+    return 0;
 }

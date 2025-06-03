@@ -11,6 +11,7 @@ import monthlyStatsRoutes from './routes/monthlyStats';
 import seasonStatsRoutes from './routes/seasonStats';
 
 
+
 // observatorio_api/src/index.ts
 export * from './models/HolidayStats.model';
 const app = express();
