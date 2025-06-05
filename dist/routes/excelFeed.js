@@ -42,18 +42,12 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const where = {};
         if (year || fromYear || toYear) {
             where.year = {};
-            if (year) {
+            if (year)
                 where.year[sequelize_1.Op.eq] = Number(year);
-            }
-            if (fromYear) {
+            if (fromYear)
                 where.year[sequelize_1.Op.gte] = Number(fromYear);
-            }
-            if (toYear) {
+            if (toYear)
                 where.year[sequelize_1.Op.lte] = Number(toYear);
-            }
-            if (month) {
-                where.month = { [sequelize_1.Op.iLike]: `%${month}%` };
-            }
         }
         if (municipality) {
             where.municipality = { [sequelize_1.Op.iLike]: `%${municipality}%` };
@@ -61,11 +55,22 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (bridgeName) {
             where.bridgeName = { [sequelize_1.Op.iLike]: `%${bridgeName}%` };
         }
+        if (month) {
+            where.month = { [sequelize_1.Op.iLike]: `%${month}%` };
+        }
         const results = yield HolidayStats_model_1.default.findAll({ where });
         res.json(results);
     }
     catch (err) {
-        console.error('Error fetching holiday stats:', err);
+        console.error('🔴 Error fetching holiday stats (full):', err);
+        if (err instanceof Error) {
+            console.error('Message:', err.message);
+            const anyErr = err;
+            if (anyErr.parent) {
+                console.error('Parent detail:', anyErr.parent.detail || anyErr.parent);
+                console.error('Parent sql:', anyErr.parent.sql);
+            }
+        }
         res.status(500).json({ error: 'Error fetching holiday stats' });
     }
 }));

@@ -9,6 +9,7 @@ import Hollydays from '../models/HolidayStats.model';
 import MonthlyStats from '../models/MonthlyStats.model';
 import SeasonStats from '../models/SeasonStats.model';
 
+
 dotenv.config();
 
 const sequelize = new Sequelize({

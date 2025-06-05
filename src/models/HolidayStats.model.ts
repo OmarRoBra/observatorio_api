@@ -2,25 +2,31 @@ import { Table, Column, Model, DataType } from 'sequelize-typescript';
 
 @Table({ tableName: 'holiday_stats' })
 export default class HolidayStats extends Model {
+  @Column({ primaryKey: true, autoIncrement: true, type: DataType.INTEGER })
+  id!: number;
+
   @Column({ type: DataType.INTEGER, allowNull: false })
   year!: number;
 
-  @Column({ field: 'bridgename', type: DataType.STRING, allowNull: false })
+  @Column({ type: DataType.STRING, allowNull: false })
   bridgeName!: string;
 
   @Column({ type: DataType.STRING, allowNull: false })
   municipality!: string;
 
-  @Column({ field: 'occupancyrate', type: DataType.FLOAT, allowNull: false })
+  @Column({ type: DataType.STRING, allowNull: false })
+  month!: string;
+
+  @Column({ type: DataType.FLOAT, allowNull: false })
   occupancyRate!: number;
 
-  @Column({ field: 'roomoffer', type: DataType.INTEGER, allowNull: false })
+  @Column({ type: DataType.INTEGER, allowNull: false })
   roomOffer!: number;
 
-  @Column({ field: 'occupiedrooms', type: DataType.INTEGER, allowNull: false })
+  @Column({ type: DataType.INTEGER, allowNull: false })
   occupiedRooms!: number;
 
-  @Column({ field: 'availablebeds', type: DataType.INTEGER, allowNull: false })
+  @Column({ type: DataType.INTEGER, allowNull: false })
   availableBeds!: number;
 
   @Column({ type: DataType.FLOAT, allowNull: false })
@@ -32,18 +38,21 @@ export default class HolidayStats extends Model {
   @Column({ type: DataType.INTEGER, allowNull: false })
   nights!: number;
 
-  @Column({ field: 'touristspernight', type: DataType.INTEGER, allowNull: false })
+  @Column({ type: DataType.INTEGER, allowNull: false })
   touristsPerNight!: number;
 
   @Column({ type: DataType.FLOAT, allowNull: false })
   gpd!: number;
 
-  @Column({ field: 'economicimpact', type: DataType.BIGINT, allowNull: false })
+  @Column({ type: DataType.BIGINT, allowNull: false })
   economicImpact!: number;
 
-  @Column({ field: 'touristflow', type: DataType.INTEGER, allowNull: false })
+  @Column({ type: DataType.INTEGER, allowNull: false })
   touristFlow!: number;
 
-  @Column({ type: DataType.STRING, allowNull: false })
-  month!: string; // Ej: 'Febrero'
+  @Column({ type: DataType.DATE, allowNull: false })
+  createdAt!: Date;
+
+  @Column({ type: DataType.DATE, allowNull: false })
+  updatedAt!: Date;
 }

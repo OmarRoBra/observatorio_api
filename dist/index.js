@@ -47,8 +47,9 @@ app.use(express_1.default.urlencoded({ extended: true }));
 app.use('/news', news_routes_1.default);
 app.use('/auth', auth_routes_1.default);
 app.use('/user', user_routes_1.default);
-app.use('/inventory', inventory_routes_1.default);
+app.use('/inventory', inventory_routes_1.default); // ✅ Correcto
 app.use('/info-injection', excelFeed_1.default);
+app.use('/monthly-stats', monthlyStats_1.default);
 app.use('/monthly-stats', monthlyStats_1.default);
 app.use('/season-stats', seasonStats_1.default);
 function initializeDatabase() {

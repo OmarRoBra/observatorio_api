@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import User from "../models/user.model";
+import bcrypt from "bcrypt";
 
 export const getUser = async (req: any, res: Response): Promise<void> => {
   const userId = req.userId; // Use req.userId
@@ -58,3 +59,82 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
     res.status(500).json({ message: "Error deleting user", error });
   }
 };
+
+export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
+  if (!(req as any).user || !(req as any).user.isAdmin) {
+    res.status(403).json({ message: "Access denied" });
+    return;
+  }
+  try {
+    const users = await User.findAll({
+      attributes: { exclude: ["password"] }, // Excluir la contraseña
+    });
+
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching users", error });
+  }
+}
+
+export const createUser = async (req: any, res: Response): Promise<void> => {
+  if (req.role !== "admin") {
+    res.status(403).json({ message: "Forbidden" });
+    return;
+  }
+  const { name, email, password, role } = req.body;
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await User.create({ name, email, password: hashedPassword, role });
+    res.status(201).json({ message: "User created", user });
+  } catch (error) {
+    res.status(500).json({ message: "Error creating user", error });
+  }
+};
+
+// esitar usuario (admin)
+export const updateUserById = async (req: any, res: Response): Promise<void> => {
+  if (!(req as any).user || !(req as any).user.isAdmin) {
+    res.status(403).json({ message: "Access denied" });
+    return;
+  }
+  const userId = req.params.id;
+  const { name, email, role } = req.body;
+
+  try {
+    const user = await User.findByPk(userId);
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    user.name = name || user.name;
+    user.email = email || user.email;
+    user.role = role || user.role;
+    await user.save();
+
+    res.json({ message: "User updated", user });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating user", error });
+  }
+}
+
+export const deleteUserbyId = async (req: any, res: Response): Promise<void> => {
+  if (!(req as any).user || !(req as any).user.isAdmin) {
+    res.status(403).json({ message: "Access denied" });
+    return;
+  }
+  const userId = req.params.id;
+
+  try {
+    const user = await User.findByPk(userId);
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    await user.destroy();
+    res.json({ message: "User deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting user", error });
+  }
+}

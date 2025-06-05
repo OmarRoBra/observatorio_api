@@ -12,6 +12,9 @@ import seasonStatsRoutes from './routes/seasonStats';
 
 
 
+
+
+
 // observatorio_api/src/index.ts
 export * from './models/HolidayStats.model';
 const app = express();
@@ -26,8 +29,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/news', newsRoutes);
 app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
-app.use('/inventory', inventoryRoutes);
+app.use('/inventory', inventoryRoutes); // ✅ Correcto
 app.use('/info-injection', excelInfo);
+app.use('/monthly-stats', monthlyStatsRoutes);
 app.use('/monthly-stats', monthlyStatsRoutes);
 app.use('/season-stats', seasonStatsRoutes);
 

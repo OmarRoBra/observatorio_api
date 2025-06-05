@@ -1,8 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 import { verifyToken } from '../utils/jwt';
 
+// Puedes extender la interfaz de Request para incluir userId y userRole
+interface AuthenticatedRequest extends Request {
+  userId?: string;
+  userRole?: string;
+}
+
 export const authMiddleware = (
-  req: any,
+  req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
 ): void => {
@@ -15,7 +21,8 @@ export const authMiddleware = (
 
   try {
     const decoded = verifyToken(token);
-    req.userId = decoded.userId; // Assign userId to req
+    req.userId = decoded.userId;
+    req.userRole = decoded.role;
     next();
   } catch (error) {
     res.status(401).json({ message: 'Invalid token' });

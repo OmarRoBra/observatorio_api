@@ -38,22 +38,9 @@ router.get('/', async (req, res) => {
 
     if (year || fromYear || toYear) {
       where.year = {};
-
-      if (year) {
-        where.year[Op.eq] = Number(year);
-      }
-
-      if (fromYear) {
-        where.year[Op.gte] = Number(fromYear);
-      }
-
-      if (toYear) {
-        where.year[Op.lte] = Number(toYear);
-      }
-      if (month) {
-        where.month = { [Op.iLike]: `%${month}%` };
-      }
-
+      if (year)      where.year[Op.eq] = Number(year);
+      if (fromYear)  where.year[Op.gte] = Number(fromYear);
+      if (toYear)    where.year[Op.lte] = Number(toYear);
     }
 
     if (municipality) {
@@ -64,10 +51,22 @@ router.get('/', async (req, res) => {
       where.bridgeName = { [Op.iLike]: `%${bridgeName}%` };
     }
 
+    if (month) {
+      where.month = { [Op.iLike]: `%${month}%` };
+    }
+
     const results = await HolidayStats.findAll({ where });
     res.json(results);
   } catch (err) {
-    console.error('Error fetching holiday stats:', err);
+    console.error('🔴 Error fetching holiday stats (full):', err);
+    if (err instanceof Error) {
+      console.error('Message:', err.message);
+      const anyErr = err as any;
+      if (anyErr.parent) {
+        console.error('Parent detail:', anyErr.parent.detail || anyErr.parent);
+        console.error('Parent sql:', anyErr.parent.sql);
+      }
+    }
     res.status(500).json({ error: 'Error fetching holiday stats' });
   }
 });
