@@ -1,29 +1,42 @@
 import HolidayStats from '../models/HolidayStats.model';
 
-export async function insertHolidayStatsFromExcel(data: any[]) {
-  const formatted = data
-    .map((row) => {
-      const rawEconomicImpact = row['Derrama Económica']
-        ?.toString()
-        .replace(/,/g, '');
-      return {
-        year: parseInt(row['Año']),
-        bridgeName: row['Puente']?.toString().trim(),
-        municipality: row['Municipio']?.toString().trim(),
-        occupancyRate: parseFloat(row['% Ocupación']),
-        roomOffer: parseInt(row['Oferta Cuartos']),
-        occupiedRooms: parseInt(row['Cuartos Ocupados']),
-        availableBeds: parseInt(row['Ctos. Disp.']),
-        stay: parseFloat(row['Estadía']),
-        density: parseFloat(row['Densidad']),
-        nights: parseInt(row['Noches']),
-        touristsPerNight: parseInt(row['Turistas Noche']),
-        gpd: parseFloat(row['GPD']),
-        economicImpact: parseInt(rawEconomicImpact),
-        touristFlow: parseInt(row['Afluencia Turística']),
-      };
-    })
-    .filter((row) => row.bridgeName); // Filtra filas incompletas
+// Convierte números tipo "1,234.56" o "1.234,56" a number JS
+function cleanNumber(val: any) {
+  if (typeof val === "number") return val;
+  if (typeof val === "string") {
+    let cleaned = val.replace(/,/g, ''); // elimina las comas
+    return Number(cleaned);
+  }
+  return 0;
+}
 
-  await HolidayStats.bulkCreate(formatted);
+export async function insertHolidayStatsFromExcel(rows: any[]) {
+  let inserted = 0;
+  for (const row of rows) {
+    // Si falta año o municipio, omite fila
+    if (!row['Año'] || !row['Municipio']) continue;
+
+    try {
+      await HolidayStats.create({
+        year: Number(row['Año']),
+        bridge_name: row['Fin de semana largo'] || "",
+        municipality: row['Municipio'] || "",
+        occupancy_rate: cleanNumber(row['Tasa de ocupación']),
+        room_offer: cleanNumber(row['Oferta cuartos']),
+        occupied_rooms: cleanNumber(row['Cuartos ocupados']),
+        available_rooms: cleanNumber(row['Cuartos disponibles']),
+        average_stay: cleanNumber(row['Estadía promedio']),
+        occupancy_density: cleanNumber(row['Densidad de ocupación']),
+        nights: cleanNumber(row['Noches']),
+        tourists_per_night: cleanNumber(row['Turistas noche']),
+        daily_avg_spending: cleanNumber(row['GPD']), // Usa aquí el encabezado exacto, puede ser 'Gasto promedio diario'
+        economic_impact: cleanNumber(row['Derrama económica']),
+        tourist_flow: cleanNumber(row['Afluencia turística']),
+      });
+      inserted++;
+    } catch (e) {
+      console.error("❌ Error insertando fila:", e, row);
+    }
+  }
+  console.log(`✔️ Registros insertados: ${inserted}`);
 }
