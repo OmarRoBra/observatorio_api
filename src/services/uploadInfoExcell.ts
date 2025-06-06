@@ -24,9 +24,9 @@ function cleanMoney(val: any) {
 // Mapeo de columnas Excel a modelo
 const fieldMap: Record<string, string> = {
   "Año": "year",
-  "Fin de semana largo": "bridge_name",
+  "Puente": "bridge_name",
   "Municipio": "municipality",
-  "Tasa de ocupación": "occupancy_rate",
+  "% Ocupación": "occupancy_rate",
   "Oferta cuartos": "room_offer",
   "Cuartos ocupados": "occupied_rooms",
   "Cuartos disponibles": "available_rooms",
@@ -34,31 +34,40 @@ const fieldMap: Record<string, string> = {
   "Densidad de ocupación": "occupancy_density",
   "Noches": "nights",
   "Turistas noche": "tourists_per_night",
-  "GPD": "daily_avg_spending", // o "Gasto promedio diario" si ese es el encabezado real
+  "GPD": "daily_avg_spending",
   "Derrama económica": "economic_impact",
   "Afluencia turística": "tourist_flow"
 };
-
 export async function insertHolidayStatsFromExcel(rows: any[]) {
   for (const row of rows) {
     const record: any = {};
     for (const [excelKey, modelKey] of Object.entries(fieldMap)) {
+      const val = row[excelKey];
+
       if (modelKey === "economic_impact") {
-        // Solo para el campo de dinero, usa cleanMoney
-        record[modelKey] = cleanMoney(row[excelKey]);
+        record[modelKey] = cleanMoney(val);
       } else if (
         [
-          "year", "room_offer", "available_rooms", "occupancy_rate", "occupied_rooms",
-          "average_stay", "occupancy_density", "nights", "tourists_per_night",
-          "daily_avg_spending", "tourist_flow"
+          "year",
+          "room_offer",
+          "available_rooms",
+          "occupancy_rate",
+          "occupied_rooms",
+          "average_stay",
+          "occupancy_density",
+          "nights",
+          "tourists_per_night",
+          "daily_avg_spending",
+          "tourist_flow"
         ].includes(modelKey)
       ) {
-        record[modelKey] = cleanNumber(row[excelKey]);
+        record[modelKey] = cleanNumber(val);
       } else {
-        record[modelKey] = row[excelKey] || "";
+        // Campos de texto
+        record[modelKey] = val || "";
       }
     }
-    // Quita registros vacíos (puedes agregar lógica extra aquí si quieres)
+    // Si falta algún campo clave, saltar la fila
     if (!record.year || !record.bridge_name || !record.municipality) continue;
 
     await HolidayStats.upsert(record, {
@@ -66,3 +75,4 @@ export async function insertHolidayStatsFromExcel(rows: any[]) {
     });
   }
 }
+
