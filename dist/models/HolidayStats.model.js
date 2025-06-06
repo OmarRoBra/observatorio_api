@@ -13,78 +13,62 @@ const sequelize_typescript_1 = require("sequelize-typescript");
 let HolidayStats = class HolidayStats extends sequelize_typescript_1.Model {
 };
 __decorate([
-    (0, sequelize_typescript_1.Column)({ primaryKey: true, autoIncrement: true, type: sequelize_typescript_1.DataType.INTEGER }),
-    __metadata("design:type", Number)
-], HolidayStats.prototype, "id", void 0);
-__decorate([
     (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER, allowNull: false }),
     __metadata("design:type", Number)
 ], HolidayStats.prototype, "year", void 0);
 __decorate([
-    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.STRING, allowNull: false }),
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.STRING }),
     __metadata("design:type", String)
-], HolidayStats.prototype, "bridgeName", void 0);
+], HolidayStats.prototype, "bridge_name", void 0);
 __decorate([
-    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.STRING, allowNull: false }),
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.STRING }),
     __metadata("design:type", String)
 ], HolidayStats.prototype, "municipality", void 0);
 __decorate([
-    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.STRING, allowNull: false }),
-    __metadata("design:type", String)
-], HolidayStats.prototype, "month", void 0);
-__decorate([
-    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.FLOAT, allowNull: false }),
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.FLOAT }),
     __metadata("design:type", Number)
-], HolidayStats.prototype, "occupancyRate", void 0);
+], HolidayStats.prototype, "occupancy_rate", void 0);
 __decorate([
-    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER, allowNull: false }),
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER }),
     __metadata("design:type", Number)
-], HolidayStats.prototype, "roomOffer", void 0);
+], HolidayStats.prototype, "room_offer", void 0);
 __decorate([
-    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER, allowNull: false }),
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER }),
     __metadata("design:type", Number)
-], HolidayStats.prototype, "occupiedRooms", void 0);
+], HolidayStats.prototype, "occupied_rooms", void 0);
 __decorate([
-    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER, allowNull: false }),
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER }),
     __metadata("design:type", Number)
-], HolidayStats.prototype, "availableBeds", void 0);
+], HolidayStats.prototype, "available_rooms", void 0);
 __decorate([
-    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.FLOAT, allowNull: false }),
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.FLOAT }),
     __metadata("design:type", Number)
-], HolidayStats.prototype, "stay", void 0);
+], HolidayStats.prototype, "average_stay", void 0);
 __decorate([
-    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.FLOAT, allowNull: false }),
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.FLOAT }),
     __metadata("design:type", Number)
-], HolidayStats.prototype, "density", void 0);
+], HolidayStats.prototype, "occupancy_density", void 0);
 __decorate([
-    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER, allowNull: false }),
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER }),
     __metadata("design:type", Number)
 ], HolidayStats.prototype, "nights", void 0);
 __decorate([
-    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER, allowNull: false }),
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER }),
     __metadata("design:type", Number)
-], HolidayStats.prototype, "touristsPerNight", void 0);
+], HolidayStats.prototype, "tourists_per_night", void 0);
 __decorate([
-    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.FLOAT, allowNull: false }),
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.FLOAT }),
     __metadata("design:type", Number)
-], HolidayStats.prototype, "gpd", void 0);
+], HolidayStats.prototype, "daily_avg_spending", void 0);
 __decorate([
-    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.BIGINT, allowNull: false }),
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.FLOAT }),
     __metadata("design:type", Number)
-], HolidayStats.prototype, "economicImpact", void 0);
+], HolidayStats.prototype, "economic_impact", void 0);
 __decorate([
-    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER, allowNull: false }),
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER }),
     __metadata("design:type", Number)
-], HolidayStats.prototype, "touristFlow", void 0);
-__decorate([
-    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.DATE, allowNull: false }),
-    __metadata("design:type", Date)
-], HolidayStats.prototype, "createdAt", void 0);
-__decorate([
-    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.DATE, allowNull: false }),
-    __metadata("design:type", Date)
-], HolidayStats.prototype, "updatedAt", void 0);
+], HolidayStats.prototype, "tourist_flow", void 0);
 HolidayStats = __decorate([
-    (0, sequelize_typescript_1.Table)({ tableName: 'holiday_stats' })
+    (0, sequelize_typescript_1.Table)({ tableName: 'holiday_stats', timestamps: true })
 ], HolidayStats);
 exports.default = HolidayStats;

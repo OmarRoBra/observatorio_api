@@ -14,30 +14,39 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.insertHolidayStatsFromExcel = insertHolidayStatsFromExcel;
 const HolidayStats_model_1 = __importDefault(require("../models/HolidayStats.model"));
-function insertHolidayStatsFromExcel(data) {
+// Limpia número, soporta miles y decimales
+function cleanNumber(val) {
+    if (typeof val === "number")
+        return val;
+    if (typeof val === "string") {
+        const cleaned = val.replace(/\./g, '').replace(',', '.');
+        return Number(cleaned.replace(/[^0-9.-]/g, ""));
+    }
+    return 0;
+}
+function insertHolidayStatsFromExcel(rows) {
     return __awaiter(this, void 0, void 0, function* () {
-        const formatted = data
-            .map((row) => {
-            var _a, _b, _c;
-            const rawEconomicImpact = (_a = row['Derrama Económica']) === null || _a === void 0 ? void 0 : _a.toString().replace(/,/g, '');
-            return {
-                year: parseInt(row['Año']),
-                bridgeName: (_b = row['Puente']) === null || _b === void 0 ? void 0 : _b.toString().trim(),
-                municipality: (_c = row['Municipio']) === null || _c === void 0 ? void 0 : _c.toString().trim(),
-                occupancyRate: parseFloat(row['% Ocupación']),
-                roomOffer: parseInt(row['Oferta Cuartos']),
-                occupiedRooms: parseInt(row['Cuartos Ocupados']),
-                availableBeds: parseInt(row['Ctos. Disp.']),
-                stay: parseFloat(row['Estadía']),
-                density: parseFloat(row['Densidad']),
-                nights: parseInt(row['Noches']),
-                touristsPerNight: parseInt(row['Turistas Noche']),
-                gpd: parseFloat(row['GPD']),
-                economicImpact: parseInt(rawEconomicImpact),
-                touristFlow: parseInt(row['Afluencia Turística']),
-            };
-        })
-            .filter((row) => row.bridgeName); // Filtra filas incompletas
-        yield HolidayStats_model_1.default.bulkCreate(formatted);
+        for (const row of rows) {
+            yield HolidayStats_model_1.default.create({
+                year: Number(row['Año']),
+                bridgeName: row['Fin de semana largo'] || "",
+                municipality: row['Municipio'] || "",
+                occupancyRate: cleanNumber(row['Tasa de ocupación']),
+                roomOffer: cleanNumber(row['Oferta cuartos']),
+                occupiedRooms: cleanNumber(row['Cuartos ocupados']),
+                availableRooms: cleanNumber(row['Cuartos disponibles']),
+                averageStay: cleanNumber(row['Estadía promedio']),
+                occupancyDensity: cleanNumber(row['Densidad de ocupación']),
+                nights: cleanNumber(row['Noches']),
+                touristsPerNight: cleanNumber(row['Turistas noche']),
+                dailyAvgSpending: cleanNumber(row['GPD']),
+                economicImpact: cleanNumber(row['Derrama económica']),
+                touristFlow: cleanNumber(row['Afluencia turística']),
+            });
+        }
     });
 }
+// Si tu Excel tiene columna 'Mes', si no ponle un valor por defecto
+//   month: row['Mes'] || "", // Si tu Excel tiene columna 'Mes', si no ponle un valor por defecto
+//   month: row['Mes'] || "", // Si tu Excel tiene columna 'Mes', si no ponle un valor por defecto
+//   month: row['Mes'] || "", // Si tu Excel tiene columna 'Mes', si no ponle un valor por defecto
