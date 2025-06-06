@@ -15,13 +15,12 @@ export async function insertHolidayStatsFromExcel(rows: any[]) {
         occupancy_density: Number(row['Densidad de ocupación']),
         nights: Number(row['Noches']),
         tourists_per_night: Number(row['Turistas noche']),
-        daily_avg_spending: Number(row['GPD']),
+        daily_avg_spending: Number(row['Gasto promedio diario']),
         economic_impact: Number(row['Derrama económica']),
         tourist_flow: Number(row['Afluencia turística']),
       });
     } catch (e) {
       console.error("❌ Error insertando fila:", e, row);
-      throw e;
     }
   }
 }

@@ -33,7 +33,7 @@ router.post(
 
 router.get('/', async (req, res) => {
   try {
-    const { year, fromYear, toYear, municipality, bridgeName, month } = req.query;
+    const { year, fromYear, toYear, municipality, bridgeName } = req.query;
     const where: any = {};
 
     if (year || fromYear || toYear) {
@@ -48,28 +48,17 @@ router.get('/', async (req, res) => {
     }
 
     if (bridgeName) {
-      where.bridgeName = { [Op.iLike]: `%${bridgeName}%` };
-    }
-
-    if (month) {
-      where.month = { [Op.iLike]: `%${month}%` };
+      where['bridge_name'] = { [Op.iLike]: `%${bridgeName}%` };
     }
 
     const results = await HolidayStats.findAll({ where });
     res.json(results);
   } catch (err) {
     console.error('🔴 Error fetching holiday stats (full):', err);
-    if (err instanceof Error) {
-      console.error('Message:', err.message);
-      const anyErr = err as any;
-      if (anyErr.parent) {
-        console.error('Parent detail:', anyErr.parent.detail || anyErr.parent);
-        console.error('Parent sql:', anyErr.parent.sql);
-      }
-    }
     res.status(500).json({ error: 'Error fetching holiday stats' });
   }
 });
+
 // Eliminar una estadística por ID
 
 export default router;

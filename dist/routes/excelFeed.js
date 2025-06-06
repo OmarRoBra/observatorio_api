@@ -38,7 +38,7 @@ router.post('/upload-excel', upload_1.upload.single('file'), (req, res) => __awa
 }));
 router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { year, fromYear, toYear, municipality, bridgeName, month } = req.query;
+        const { year, fromYear, toYear, municipality, bridgeName } = req.query;
         const where = {};
         if (year || fromYear || toYear) {
             where.year = {};
@@ -53,24 +53,13 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             where.municipality = { [sequelize_1.Op.iLike]: `%${municipality}%` };
         }
         if (bridgeName) {
-            where.bridgeName = { [sequelize_1.Op.iLike]: `%${bridgeName}%` };
-        }
-        if (month) {
-            where.month = { [sequelize_1.Op.iLike]: `%${month}%` };
+            where['bridge_name'] = { [sequelize_1.Op.iLike]: `%${bridgeName}%` };
         }
         const results = yield HolidayStats_model_1.default.findAll({ where });
         res.json(results);
     }
     catch (err) {
         console.error('🔴 Error fetching holiday stats (full):', err);
-        if (err instanceof Error) {
-            console.error('Message:', err.message);
-            const anyErr = err;
-            if (anyErr.parent) {
-                console.error('Parent detail:', anyErr.parent.detail || anyErr.parent);
-                console.error('Parent sql:', anyErr.parent.sql);
-            }
-        }
         res.status(500).json({ error: 'Error fetching holiday stats' });
     }
 }));
