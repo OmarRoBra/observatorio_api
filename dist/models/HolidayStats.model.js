@@ -13,7 +13,7 @@ const sequelize_typescript_1 = require("sequelize-typescript");
 let HolidayStats = class HolidayStats extends sequelize_typescript_1.Model {
 };
 __decorate([
-    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER }),
+    (0, sequelize_typescript_1.Column)({ field: 'year', type: sequelize_typescript_1.DataType.INTEGER }),
     __metadata("design:type", Number)
 ], HolidayStats.prototype, "year", void 0);
 __decorate([
@@ -21,7 +21,7 @@ __decorate([
     __metadata("design:type", String)
 ], HolidayStats.prototype, "bridge_name", void 0);
 __decorate([
-    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.STRING }),
+    (0, sequelize_typescript_1.Column)({ field: 'municipality', type: sequelize_typescript_1.DataType.STRING }),
     __metadata("design:type", String)
 ], HolidayStats.prototype, "municipality", void 0);
 __decorate([
@@ -49,7 +49,7 @@ __decorate([
     __metadata("design:type", Number)
 ], HolidayStats.prototype, "occupancy_density", void 0);
 __decorate([
-    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER }),
+    (0, sequelize_typescript_1.Column)({ field: 'nights', type: sequelize_typescript_1.DataType.INTEGER }),
     __metadata("design:type", Number)
 ], HolidayStats.prototype, "nights", void 0);
 __decorate([
@@ -68,6 +68,14 @@ __decorate([
     (0, sequelize_typescript_1.Column)({ field: 'tourist_flow', type: sequelize_typescript_1.DataType.INTEGER }),
     __metadata("design:type", Number)
 ], HolidayStats.prototype, "tourist_flow", void 0);
+__decorate([
+    (0, sequelize_typescript_1.Column)({ field: 'createdAt', type: sequelize_typescript_1.DataType.DATE }),
+    __metadata("design:type", Date)
+], HolidayStats.prototype, "createdAt", void 0);
+__decorate([
+    (0, sequelize_typescript_1.Column)({ field: 'updatedAt', type: sequelize_typescript_1.DataType.DATE }),
+    __metadata("design:type", Date)
+], HolidayStats.prototype, "updatedAt", void 0);
 HolidayStats = __decorate([
     (0, sequelize_typescript_1.Table)({ tableName: 'holiday_stats', timestamps: true })
 ], HolidayStats);
