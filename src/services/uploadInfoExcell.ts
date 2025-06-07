@@ -4,15 +4,21 @@ import HolidayStats from '../models/HolidayStats.model';
 
 
 // Limpia campos de dinero (para "Derrama económica")
-function cleanMoney(val: any) {
-  if (typeof val === "string") {
-    // Elimina separadores de miles (coma o punto), y deja el punto de decimal si existe
-    const cleaned = val.replace(/,/g, "").replace(/\./g, "");
-    const number = Number(cleaned);
-    return isNaN(number) ? 0 : number;
+function cleanMoney(val: any): number {
+  if (typeof val !== 'string') {
+    const n = Number(val);
+    return isNaN(n) ? 0 : n;
   }
-  return val;
+  // Quita espacios
+  let v = val.replace(/\s/g, '');
+  // Elimina separadores de miles: puntos o comas solo si van seguidos de 3 dígitos
+  v = v.replace(/(\d)[.,](?=\d{3}\b)/g, '$1');
+  // Convierte coma decimal a punto
+  v = v.replace(/,(\d{1,2})$/, '.$1');
+  const num = Number(v);
+  return isNaN(num) ? 0 : num;
 }
+
 
 // Mapeo de columnas Excel a modelo
 const fieldMap: Record<string, string> = {
@@ -31,6 +37,21 @@ const fieldMap: Record<string, string> = {
   "Derrama económica": "economic_impact",
   "Afluencia turística": "tourist_flow"
 };
+
+// Lista de campos numéricos
+const numericFields = [
+  "year",
+  "room_offer",
+  "available_rooms",
+  "occupancy_rate",
+  "occupied_rooms",
+  "average_stay",
+  "occupancy_density",
+  "nights",
+  "tourists_per_night",
+  "daily_avg_spending",
+  "tourist_flow"
+];
 export async function insertHolidayStatsFromExcel(rows: any[]) {
   for (const row of rows) {
     const record: any = {};
@@ -56,7 +77,15 @@ export async function insertHolidayStatsFromExcel(rows: any[]) {
       ) {
         // Convertir a número si es un campo numérico
         record[modelKey] = Number(val);
-      }
+      }if (modelKey === 'economic_impact') {
+  record[modelKey] = cleanMoney(val);
+} else if (numericFields.includes(modelKey)) {
+  record[modelKey] = Number(val) || 0;
+} else {
+  record[modelKey] = val;
+}
+
+
     }
     // Si falta algún campo clave, saltar la fila
     if (!record.year || !record.bridge_name || !record.municipality) continue;
@@ -66,4 +95,7 @@ export async function insertHolidayStatsFromExcel(rows: any[]) {
     });
   }
 }
+// Exportar la función para usarla en otros módulos
+export default insertHolidayStatsFromExcel;
+// Exportar la función para usarla en otros módulos
 

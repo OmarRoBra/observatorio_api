@@ -1,32 +1,31 @@
 import HolidayStats from '../models/HolidayStats.model';
 
 // Limpia cualquier número (soporta "5,135" o "5.135" como miles)
-function cleanNumber(val: any) {
-  if (typeof val === "number") return val;
-  if (typeof val === "string") {
-    const cleaned = val.replace(/,/g, "").replace(/\./g, ""); // quita comas y puntos (miles)
-    return Number(cleaned.replace(/[^0-9.-]/g, "")); // solo números
-  }
-  return 0;
-}
+
 
 // Limpia campos de dinero (para "Derrama económica")
-function cleanMoney(val: any) {
-  if (typeof val === "string") {
-    // Elimina separadores de miles (coma o punto), y deja el punto de decimal si existe
-    const cleaned = val.replace(/,/g, "").replace(/\./g, "");
-    const number = Number(cleaned);
-    return isNaN(number) ? 0 : number;
+function cleanMoney(val: any): number {
+  if (typeof val !== 'string') {
+    const n = Number(val);
+    return isNaN(n) ? 0 : n;
   }
-  return val;
+  // Quita espacios
+  let v = val.replace(/\s/g, '');
+  // Elimina separadores de miles: puntos o comas solo si van seguidos de 3 dígitos
+  v = v.replace(/(\d)[.,](?=\d{3}\b)/g, '$1');
+  // Convierte coma decimal a punto
+  v = v.replace(/,(\d{1,2})$/, '.$1');
+  const num = Number(v);
+  return isNaN(num) ? 0 : num;
 }
+
 
 // Mapeo de columnas Excel a modelo
 const fieldMap: Record<string, string> = {
   "Año": "year",
-  "Puente": "bridge_name",
+  "Fin de semana largo": "bridge_name",
   "Municipio": "municipality",
-  "% Ocupación": "occupancy_rate",
+  "Tasa de ocupación": "occupancy_rate",
   "Oferta cuartos": "room_offer",
   "Cuartos ocupados": "occupied_rooms",
   "Cuartos disponibles": "available_rooms",
@@ -34,10 +33,25 @@ const fieldMap: Record<string, string> = {
   "Densidad de ocupación": "occupancy_density",
   "Noches": "nights",
   "Turistas noche": "tourists_per_night",
-  "GPD": "daily_avg_spending",
+  "Gasto promedio diario": "daily_avg_spending",
   "Derrama económica": "economic_impact",
   "Afluencia turística": "tourist_flow"
 };
+
+// Lista de campos numéricos
+const numericFields = [
+  "year",
+  "room_offer",
+  "available_rooms",
+  "occupancy_rate",
+  "occupied_rooms",
+  "average_stay",
+  "occupancy_density",
+  "nights",
+  "tourists_per_night",
+  "daily_avg_spending",
+  "tourist_flow"
+];
 export async function insertHolidayStatsFromExcel(rows: any[]) {
   for (const row of rows) {
     const record: any = {};
@@ -61,11 +75,17 @@ export async function insertHolidayStatsFromExcel(rows: any[]) {
           "tourist_flow"
         ].includes(modelKey)
       ) {
-        record[modelKey] = cleanNumber(val);
-      } else {
-        // Campos de texto
-        record[modelKey] = val || "";
-      }
+        // Convertir a número si es un campo numérico
+        record[modelKey] = Number(val);
+      }if (modelKey === 'economic_impact') {
+  record[modelKey] = cleanMoney(val);
+} else if (numericFields.includes(modelKey)) {
+  record[modelKey] = Number(val) || 0;
+} else {
+  record[modelKey] = val;
+}
+
+
     }
     // Si falta algún campo clave, saltar la fila
     if (!record.year || !record.bridge_name || !record.municipality) continue;
@@ -75,4 +95,7 @@ export async function insertHolidayStatsFromExcel(rows: any[]) {
     });
   }
 }
+// Exportar la función para usarla en otros módulos
+export default insertHolidayStatsFromExcel;
+// Exportar la función para usarla en otros módulos
 
