@@ -8,6 +8,7 @@ import Users from '../models/user.model';
 import Hollydays from '../models/HolidayStats.model';
 import MonthlyStats from '../models/MonthlyStats.model';
 import SeasonStats from '../models/SeasonStats.model';
+import LongWeekendStats from '../models/LongWeekendStats.model';
 
 
 dotenv.config();
@@ -19,7 +20,7 @@ const sequelize = new Sequelize({
   database: process.env.DB_NAME,
   username: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  models: [Pdf, Users, News, Hollydays,MonthlyStats,SeasonStats], // Asegúrate de que la ruta sea correcta
+  models: [Pdf, Users, News, Hollydays,MonthlyStats,SeasonStats,LongWeekendStats], // Asegúrate de que la ruta sea correcta
   logging: false,
   dialectModule: pg,
   dialectOptions: {
