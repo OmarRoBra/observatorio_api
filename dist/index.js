@@ -36,6 +36,7 @@ const database_1 = __importDefault(require("./config/database"));
 const cors_1 = __importDefault(require("cors"));
 const monthlyStats_1 = __importDefault(require("./routes/monthlyStats"));
 const seasonStats_1 = __importDefault(require("./routes/seasonStats"));
+const longWeekendStats_1 = __importDefault(require("./routes/longWeekendStats"));
 // observatorio_api/src/index.ts
 __exportStar(require("./models/HolidayStats.model"), exports);
 const app = (0, express_1.default)();
@@ -52,6 +53,7 @@ app.use('/info-injection', excelFeed_1.default);
 app.use('/monthly-stats', monthlyStats_1.default);
 app.use('/monthly-stats', monthlyStats_1.default);
 app.use('/season-stats', seasonStats_1.default);
+app.use('/long-weekend-stats', longWeekendStats_1.default);
 function initializeDatabase() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
