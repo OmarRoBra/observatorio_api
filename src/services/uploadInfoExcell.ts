@@ -1,14 +1,7 @@
 import HolidayStats from '../models/HolidayStats.model';
 
 // Limpia cualquier número (soporta "5,135" o "5.135" como miles)
-function cleanNumber(val: any) {
-  if (typeof val === "number") return val;
-  if (typeof val === "string") {
-    const cleaned = val.replace(/,/g, "").replace(/\./g, ""); // quita comas y puntos (miles)
-    return Number(cleaned.replace(/[^0-9.-]/g, "")); // solo números
-  }
-  return 0;
-}
+
 
 // Limpia campos de dinero (para "Derrama económica")
 function cleanMoney(val: any) {
@@ -24,9 +17,9 @@ function cleanMoney(val: any) {
 // Mapeo de columnas Excel a modelo
 const fieldMap: Record<string, string> = {
   "Año": "year",
-  "Puente": "bridge_name",
+  "Fin de semana largo": "bridge_name",
   "Municipio": "municipality",
-  "% Ocupación": "occupancy_rate",
+  "Tasa de ocupación": "occupancy_rate",
   "Oferta cuartos": "room_offer",
   "Cuartos ocupados": "occupied_rooms",
   "Cuartos disponibles": "available_rooms",
@@ -34,7 +27,7 @@ const fieldMap: Record<string, string> = {
   "Densidad de ocupación": "occupancy_density",
   "Noches": "nights",
   "Turistas noche": "tourists_per_night",
-  "GPD": "daily_avg_spending",
+  "Gasto promedio diario": "daily_avg_spending",
   "Derrama económica": "economic_impact",
   "Afluencia turística": "tourist_flow"
 };
@@ -61,10 +54,8 @@ export async function insertHolidayStatsFromExcel(rows: any[]) {
           "tourist_flow"
         ].includes(modelKey)
       ) {
-        record[modelKey] = cleanNumber(val);
-      } else {
-        // Campos de texto
-        record[modelKey] = val || "";
+        // Convertir a número si es un campo numérico
+        record[modelKey] = Number(val);
       }
     }
     // Si falta algún campo clave, saltar la fila
