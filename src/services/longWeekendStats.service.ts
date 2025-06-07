@@ -1,4 +1,4 @@
-import LongWeekendStats from '../models/LongWeekendStats.model';
+/* import LongWeekendStats from '../models/LongWeekendStats.model';
 
 // Mapeo Excel->BD
 const fieldMap: Record<string, string> = {
@@ -39,3 +39,4 @@ export async function insertLongWeekendStatsFromExcel(rows: any[]) {
   });
   await LongWeekendStats.bulkCreate(records, { ignoreDuplicates: true });
 }
+ */
