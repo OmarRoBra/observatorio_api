@@ -1,4 +1,4 @@
-/* import express from 'express';
+import express from 'express';
 import multer from 'multer';
 import { insertLongWeekendStatsFromExcel } from '../services/longWeekendStats.service';
 import { readExcelFromBuffer } from '../utils/excelReader';
@@ -56,4 +56,3 @@ router.get('/search', async (req, res) => {
 });
 
 export default router;
- */
