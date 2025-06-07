@@ -9,7 +9,7 @@ import path from 'path';
 import cors from 'cors';
 import monthlyStatsRoutes from './routes/monthlyStats';
 import seasonStatsRoutes from './routes/seasonStats';
-import longWeekendStatsRoutes from './routes/longWeekendStats';
+/* import longWeekendStatsRoutes from './routes/longWeekendStats'; */
 
 
 
@@ -33,7 +33,7 @@ app.use('/inventory', inventoryRoutes); // ✅ Correcto
 app.use('/monthly-stats', monthlyStatsRoutes);
 app.use('/monthly-stats', monthlyStatsRoutes);
 app.use('/season-stats', seasonStatsRoutes);
-app.use('/long-weekend-stats', longWeekendStatsRoutes);
+/* app.use('/long-weekend-stats', longWeekendStatsRoutes); */
 
 async function initializeDatabase() {
   try {
