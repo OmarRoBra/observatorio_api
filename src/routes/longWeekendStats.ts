@@ -25,4 +25,34 @@ router.get('/', async (req, res) => {
   const stats = await LongWeekendStats.findAll();
   res.json(stats);
 });
+
+import { Op } from 'sequelize';
+router.get('/search', async (req, res) => { 
+    const { year, fromYear, toYear, municipality, bridgeName } = req.query;
+    const where: any = {};
+    
+    if (year || fromYear || toYear) {
+        where.year = {};
+        if (year)      where.year[Op.eq] = Number(year);
+        if (fromYear)  where.year[Op.gte] = Number(fromYear);
+        if (toYear)    where.year[Op.lte] = Number(toYear);
+    }
+    
+    if (municipality) {
+        where.municipality = { [Op.iLike]: `%${municipality}%` };
+    }
+    
+    if (bridgeName) {
+        where['bridge_name'] = { [Op.iLike]: `%${bridgeName}%` };
+    }
+    
+    try {
+        const results = await LongWeekendStats.findAll({ where });
+        res.json(results);
+    } catch (err) {
+        console.error('🔴 Error fetching long weekend stats:', err);
+        res.status(500).json({ error: 'Error fetching long weekend stats' });
+    }
+});
+
 export default router;
