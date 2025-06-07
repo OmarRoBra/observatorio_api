@@ -1,4 +1,4 @@
-import { Table, Column, Model, DataType } from 'sequelize-typescript';
+/* import { Table, Column, Model, DataType } from 'sequelize-typescript';
 
 @Table({ tableName: 'long_weekend_stats', timestamps: true, createdAt: 'created_at', updatedAt: 'updated_at' })
 export default class LongWeekendStats extends Model {
@@ -17,4 +17,4 @@ export default class LongWeekendStats extends Model {
   @Column({ field: 'economic_impact', type: DataType.BIGINT }) economic_impact!: number;
   @Column({ field: 'tourist_flow', type: DataType.INTEGER }) tourist_flow!: number;
 }
-    
+     */
