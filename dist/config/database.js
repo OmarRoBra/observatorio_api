@@ -9,7 +9,6 @@ const pg_1 = __importDefault(require("pg"));
 const inventory_model_1 = __importDefault(require("../models/inventory.model"));
 const news_model_1 = __importDefault(require("../models/news.model"));
 const user_model_1 = __importDefault(require("../models/user.model"));
-const HolidayStats_model_1 = __importDefault(require("../models/HolidayStats.model"));
 const MonthlyStats_model_1 = __importDefault(require("../models/MonthlyStats.model"));
 const SeasonStats_model_1 = __importDefault(require("../models/SeasonStats.model"));
 const LongWeekendStats_model_1 = __importDefault(require("../models/LongWeekendStats.model"));
@@ -21,7 +20,7 @@ const sequelize = new sequelize_typescript_1.Sequelize({
     database: process.env.DB_NAME,
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    models: [inventory_model_1.default, user_model_1.default, news_model_1.default, HolidayStats_model_1.default, MonthlyStats_model_1.default, SeasonStats_model_1.default, LongWeekendStats_model_1.default], // Asegúrate de que la ruta sea correcta
+    models: [inventory_model_1.default, user_model_1.default, news_model_1.default, MonthlyStats_model_1.default, SeasonStats_model_1.default, LongWeekendStats_model_1.default], // Asegúrate de que la ruta sea correcta
     logging: false,
     dialectModule: pg_1.default,
     dialectOptions: {

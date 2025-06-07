@@ -3,7 +3,7 @@ import authRoutes from './routes/auth.routes';
 import userRoutes from './routes/user.routes';
 import newsRoutes from './routes/news.routes';
 import inventoryRoutes from './routes/inventory.routes';
-import excelInfo from './routes/excelFeed';
+
 import sequelize from './config/database';
 import path from 'path';
 import cors from 'cors';
@@ -16,8 +16,7 @@ import longWeekendStatsRoutes from './routes/longWeekendStats';
 
 
 
-// observatorio_api/src/index.ts
-export * from './models/HolidayStats.model';
+
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -31,7 +30,6 @@ app.use('/news', newsRoutes);
 app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
 app.use('/inventory', inventoryRoutes); // ✅ Correcto
-app.use('/info-injection', excelInfo);
 app.use('/monthly-stats', monthlyStatsRoutes);
 app.use('/monthly-stats', monthlyStatsRoutes);
 app.use('/season-stats', seasonStatsRoutes);
