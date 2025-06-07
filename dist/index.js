@@ -21,10 +21,16 @@ const database_1 = __importDefault(require("./config/database"));
 const cors_1 = __importDefault(require("cors"));
 const monthlyStats_1 = __importDefault(require("./routes/monthlyStats"));
 const seasonStats_1 = __importDefault(require("./routes/seasonStats"));
-const longWeekendStats_1 = __importDefault(require("./routes/longWeekendStats"));
+/* import longWeekendStatsRoutes from './routes/longWeekendStats'; */
 const app = (0, express_1.default)();
 const port = process.env.PORT || 3000;
-app.use((0, cors_1.default)());
+app.use((0, cors_1.default)({
+    origin: [
+        "https://observatorio-colima.vercel.app", // tu frontend en producción
+        "http://localhost:3000" // para desarrollo local (opcional)
+    ],
+    credentials: true, // Si necesitas cookies/autenticación, si no puedes omitir
+}));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 // Routes
@@ -35,7 +41,7 @@ app.use('/inventory', inventory_routes_1.default); // ✅ Correcto
 app.use('/monthly-stats', monthlyStats_1.default);
 app.use('/monthly-stats', monthlyStats_1.default);
 app.use('/season-stats', seasonStats_1.default);
-app.use('/long-weekend-stats', longWeekendStats_1.default);
+/* app.use('/long-weekend-stats', longWeekendStatsRoutes); */
 function initializeDatabase() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
