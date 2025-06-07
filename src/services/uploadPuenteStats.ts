@@ -43,39 +43,62 @@ const fieldMap: Record<string, string> = {
 export async function insertHolidayStatsFromExcel(rows: any[]) {
   const upsertPromises: Promise<any>[] = [];
 
+  // Función para normalizar nombres de columna (trim, sin acentos, lowercase)
+  const normalize = (str: string) =>
+    str
+      .trim()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/\s+/g, ' ');
+
   for (const [idx, row] of rows.entries()) {
     const record: any = {};
 
-    // Mapear y limpiar valores
+    // Mapear desde encabezados originales a claves normalizadas
+    const headerMap: Record<string, string> = {};
+    Object.keys(row).forEach(origKey => {
+      headerMap[normalize(origKey)] = origKey;
+    });
+
+    // Recorrer fieldMap y extraer valor real
     for (const [excelKey, modelKey] of Object.entries(fieldMap)) {
-      const val = row[excelKey];
+      const normKey = normalize(excelKey);
+      const actualKey = headerMap[normKey];
+      if (!actualKey) {
+        console.warn(`Columna no encontrada: ${excelKey}`);
+        continue;
+      }
+      const val = row[actualKey];
+
       if (modelKey === 'economic_impact') {
         record[modelKey] = cleanMoney(val);
       } else if (numericFields.includes(modelKey)) {
         record[modelKey] = Number(val) || 0;
       } else {
-        // asume tipo string
         record[modelKey] = val != null ? String(val).trim() : '';
       }
     }
 
-    // Validación de campos clave
+    // Validar campos obligatorios
     if (!record.year || !record.bridge_name || !record.municipality) {
-      console.warn(`Fila ${idx + 1} omitida: falta year, bridge_name o municipality.`, row);
+      console.warn(`Fila ${idx + 1} omitida: falta year, bridge_name o municipality.`);
       continue;
     }
 
-    // Realizar upsert con manejo de errores por fila
     upsertPromises.push(
       HolidayStats.upsert(record, {
-        conflictFields: ['year', 'bridge_name', 'municipality']
+        conflictFields: ['year', 'bridge_name', 'municipality'],
       }).catch(err => {
         console.error(`Error upserting fila ${idx + 1}:`, record, err);
       })
     );
   }
 
-  // Esperar todas las promesas
   await Promise.all(upsertPromises);
-  console.log(`Procesadas ${upsertPromises.length} filas de ${rows.length} (omitidas ${rows.length - upsertPromises.length}).`);
+  console.log(
+    `Procesadas ${upsertPromises.length} de ${rows.length} filas (omitidas ${
+      rows.length - upsertPromises.length
+    }).`
+  );
 }
