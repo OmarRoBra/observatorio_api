@@ -40,7 +40,13 @@ const seasonStats_1 = __importDefault(require("./routes/seasonStats"));
 __exportStar(require("./models/HolidayStats.model"), exports);
 const app = (0, express_1.default)();
 const port = process.env.PORT || 3000;
-app.use((0, cors_1.default)());
+app.use((0, cors_1.default)({
+    origin: [
+        "https://observatorio-colima.vercel.app", // tu frontend en producción
+        "http://localhost:3000" // para desarrollo local (opcional)
+    ],
+    credentials: true, // Si usas cookies/autenticación
+}));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 // Routes
