@@ -21,7 +21,7 @@ const port = process.env.PORT || 3000;
 app.use(cors({
   origin: [
     'https://observatorio-colima.vercel.app',
-    'http://localhost:3000',
+    'http://localhost:3001',
     'https://observatorioturisticocolima.org'
   ],
   methods: ['GET','POST','PUT','DELETE','OPTIONS'],
