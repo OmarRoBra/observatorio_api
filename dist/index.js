@@ -41,12 +41,16 @@ const longWeekendStats_routes_1 = __importDefault(require("./routes/longWeekendS
 __exportStar(require("./models/HolidayStats.model"), exports);
 const app = (0, express_1.default)();
 const port = process.env.PORT || 3000;
+// ...
 app.use((0, cors_1.default)({
     origin: [
-        "https://observatorio-colima.vercel.app", // tu frontend en producción
-        "http://localhost:3000" // para desarrollo local (opcional)
+        'https://observatorio-colima.vercel.app',
+        'http://localhost:3000',
+        'https://observatorioturisticocolima.org'
     ],
-    credentials: true, // Si usas cookies/autenticación
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: false // o true si necesitas cookies
 }));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));

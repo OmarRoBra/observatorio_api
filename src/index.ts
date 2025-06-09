@@ -17,13 +17,18 @@ export * from './models/HolidayStats.model';
 const app = express();
 const port = process.env.PORT || 3000;
 
+// ...
 app.use(cors({
   origin: [
-    "https://observatorio-colima.vercel.app", // tu frontend en producción
-    "http://localhost:3000"                   // para desarrollo local (opcional)
+    'https://observatorio-colima.vercel.app',
+    'http://localhost:3000',
+    'https://observatorioturisticocolima.org'
   ],
-  credentials: true, // Si usas cookies/autenticación
+  methods: ['GET','POST','PUT','DELETE','OPTIONS'],
+  allowedHeaders: ['Content-Type','Authorization'],
+  credentials: false  // o true si necesitas cookies
 }));
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

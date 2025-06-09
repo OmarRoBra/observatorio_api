@@ -13,29 +13,61 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.insertLongWeekendStatsFromExcel = insertLongWeekendStatsFromExcel;
+// services/longWeekendStats.service.ts
 const LongWeekendStats_model_1 = __importDefault(require("../models/LongWeekendStats.model"));
+const cleaners_1 = require("../utils/cleaners");
 function insertLongWeekendStatsFromExcel(data) {
     return __awaiter(this, void 0, void 0, function* () {
-        const formatted = data.map((row) => {
+        const formatted = data
+            .map((row, idx) => {
             var _a, _b;
-            return ({
-                year: parseInt(row['Año']),
-                bridge_name: (_a = row['Fin de semana largo']) === null || _a === void 0 ? void 0 : _a.toString().trim(),
-                municipality: (_b = row['Municipio']) === null || _b === void 0 ? void 0 : _b.toString().trim(),
-                occupancy_rate: parseFloat(row['Tasa de ocupación']),
-                room_offer: parseInt(row['Oferta cuartos']),
-                occupied_rooms: parseFloat(row['Cuartos ocupados']),
-                available_rooms: parseInt(row['Cuartos disponibles']),
-                average_stay: parseFloat(row['Estadía promedio']),
-                occupancy_density: parseFloat(row['Densidad de ocupación']),
-                nights: parseInt(row['Noches']),
-                tourists_per_night: parseFloat(row['Turistas noche']),
-                daily_avg_spending: parseFloat(row['Gasto promedio diario']),
-                economic_impact: parseFloat(row['Derrama económica']),
-                tourist_flow: parseFloat(row['Afluencia turística']),
+            const year = (0, cleaners_1.cleanNumber)(row['Año']);
+            const bridge_name = ((_a = row['Fin de semana largo']) === null || _a === void 0 ? void 0 : _a.toString().trim()) || '';
+            const municipality = ((_b = row['Municipio']) === null || _b === void 0 ? void 0 : _b.toString().trim()) || '';
+            if (!year || !bridge_name || !municipality) {
+                console.warn(`Fila ${idx + 1} omitida (campos clave faltan).`);
+                return null;
+            }
+            return {
+                year,
+                bridge_name,
+                municipality,
+                occupancy_rate: (0, cleaners_1.cleanNumber)(row['Tasa de ocupación']),
+                room_offer: (0, cleaners_1.cleanNumber)(row['Oferta cuartos']),
+                occupied_rooms: (0, cleaners_1.cleanNumber)(row['Cuartos ocupados']),
+                available_rooms: (0, cleaners_1.cleanNumber)(row['Cuartos disponibles']),
+                average_stay: (0, cleaners_1.cleanNumber)(row['Estadía promedio']),
+                occupancy_density: (0, cleaners_1.cleanNumber)(row['Densidad de ocupación']),
+                nights: (0, cleaners_1.cleanNumber)(row['Noches']),
+                tourists_per_night: (0, cleaners_1.cleanNumber)(row['Turistas noche']),
+                daily_avg_spending: (0, cleaners_1.cleanNumber)(row['Gasto promedio diario']),
+                economic_impact: (0, cleaners_1.cleanNumber)(row['Derrama económica']),
+                tourist_flow: (0, cleaners_1.cleanNumber)(row['Afluencia turística']),
+            };
+        })
+            .filter((r) => r !== null);
+        console.log(`Total válido: ${formatted.length} filas.`);
+        try {
+            yield LongWeekendStats_model_1.default.bulkCreate(formatted, {
+                updateOnDuplicate: [
+                    'occupancy_rate',
+                    'room_offer',
+                    'occupied_rooms',
+                    'available_rooms',
+                    'average_stay',
+                    'occupancy_density',
+                    'nights',
+                    'tourists_per_night',
+                    'daily_avg_spending',
+                    'economic_impact',
+                    'tourist_flow'
+                ]
             });
-        }).filter((row) => row.bridge_name);
-        console.log('Filas a insertar:', formatted.length);
-        yield LongWeekendStats_model_1.default.bulkCreate(formatted);
+            console.log('Insert/update batch completado con éxito.');
+        }
+        catch (e) {
+            console.error('Error al bulkCreate/upsert:', e);
+            throw e;
+        }
     });
 }
