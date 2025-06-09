@@ -9,6 +9,7 @@ import path from 'path';
 import cors from 'cors';
 import monthlyStatsRoutes from './routes/monthlyStats';
 import seasonStatsRoutes from './routes/seasonStats';
+import LongWeekendStatsRoutes from './routes/longWeekendStats.routes';
 
 
 // observatorio_api/src/index.ts
@@ -35,7 +36,7 @@ app.use('/inventory', inventoryRoutes);
 app.use('/info-injection', excelInfo);
 app.use('/monthly-stats', monthlyStatsRoutes);
 app.use('/season-stats', seasonStatsRoutes);
-
+app.use('/long-weekend-stats', LongWeekendStatsRoutes);
 async function initializeDatabase() {
   try {
     await sequelize.authenticate(); // Verificar la conexión
