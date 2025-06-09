@@ -16,7 +16,13 @@ export * from './models/HolidayStats.model';
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    "https://observatorio-colima.vercel.app", // tu frontend en producción
+    "http://localhost:3000"                   // para desarrollo local (opcional)
+  ],
+  credentials: true, // Si usas cookies/autenticación
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
