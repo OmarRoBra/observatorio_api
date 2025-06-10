@@ -61,3 +61,28 @@ export const deletePdf = async (req: Request, res: Response): Promise<void> => {
     });
   }
 };
+export const updatePdf = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const { title, fileUrl, category } = req.body;
+
+    const pdf = await Pdf.findByPk(id);
+    if (!pdf) {
+      res.status(404).json({ message: 'PDF not found' });
+      return;
+    }
+
+    if (title) pdf.title = title;
+    if (fileUrl) pdf.fileUrl = fileUrl;
+    if (category) pdf.category = category;
+
+    await pdf.save();
+    res.json({ ...pdf.toJSON(), url: pdf.fileUrl });
+  } catch (error) {
+    console.error('Error updating PDF:', error);
+    res.status(500).json({ 
+      message: 'Error updating PDF',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+};

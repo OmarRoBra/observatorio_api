@@ -9,4 +9,5 @@ const router = express_1.default.Router();
 router.post('/', inventory_controller_1.uploadPdf);
 router.get('/', inventory_controller_1.getPdfs);
 router.delete('/:id', inventory_controller_1.deletePdf);
+router.put('/:id', inventory_controller_1.updatePdf); // <-- Falta en tu router
 exports.default = router;

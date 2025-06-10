@@ -40,6 +40,15 @@ router.get('/', async (req, res) => {
     res.status(500).json({ error: "Error en monthly-stats", details: e });
   }
 });
+router.delete('/:id', async (req, res) => {
+  try {
+    const deleted = await MonthlyStats.destroy({ where: { id: req.params.id } });
+    if (deleted) res.json({ success: true });
+    else res.status(404).json({ error: 'No encontrado' });
+  } catch (err) {
+    res.status(500).json({ error: 'Error eliminando el registro' });
+  }
+});
 
 
 export default router;

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deletePdf = exports.getPdfs = exports.uploadPdf = void 0;
+exports.updatePdf = exports.deletePdf = exports.getPdfs = exports.uploadPdf = void 0;
 const inventory_model_1 = __importDefault(require("../models/inventory.model"));
 const uploadPdf = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -75,3 +75,30 @@ const deletePdf = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.deletePdf = deletePdf;
+const updatePdf = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const { title, fileUrl, category } = req.body;
+        const pdf = yield inventory_model_1.default.findByPk(id);
+        if (!pdf) {
+            res.status(404).json({ message: 'PDF not found' });
+            return;
+        }
+        if (title)
+            pdf.title = title;
+        if (fileUrl)
+            pdf.fileUrl = fileUrl;
+        if (category)
+            pdf.category = category;
+        yield pdf.save();
+        res.json(Object.assign(Object.assign({}, pdf.toJSON()), { url: pdf.fileUrl }));
+    }
+    catch (error) {
+        console.error('Error updating PDF:', error);
+        res.status(500).json({
+            message: 'Error updating PDF',
+            error: error instanceof Error ? error.message : 'Unknown error'
+        });
+    }
+});
+exports.updatePdf = updatePdf;

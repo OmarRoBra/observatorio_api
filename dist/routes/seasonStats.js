@@ -17,6 +17,7 @@ const upload_1 = require("../middleware/upload");
 const excelReader_1 = require("../utils/excelReader");
 const seasonStatsProcessor_1 = require("../services/seasonStatsProcessor");
 const SeasonStats_model_1 = __importDefault(require("../models/SeasonStats.model"));
+const sequelize_1 = require("sequelize");
 const router = (0, express_1.Router)();
 router.post('/upload-excel', upload_1.upload.single('file'), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -37,5 +38,36 @@ router.post('/upload-excel', upload_1.upload.single('file'), (req, res) => __awa
 router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const stats = yield SeasonStats_model_1.default.findAll();
     res.json(stats);
+}));
+router.delete('/by-date', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { start, end } = req.query;
+        if (!start) {
+            res.status(400).json({ error: 'Debe indicar al menos fecha start (YYYY-MM-DD)' });
+            return;
+        }
+        // Construimos la condición
+        const where = {
+            date: {
+                // >= start
+                [sequelize_1.Op.gte]: new Date(start),
+            }
+        };
+        if (end) {
+            // <= end (solo si end viene)
+            where.date[sequelize_1.Op.lte] = new Date(end);
+        }
+        // Ejecutamos el borrado en lote
+        const count = yield SeasonStats_model_1.default.destroy({ where });
+        res.json({
+            success: true,
+            deletedCount: count,
+            message: `${count} registros eliminados desde ${start}${end ? ` hasta ${end}` : ''}.`
+        });
+    }
+    catch (err) {
+        console.error('Error eliminando por fecha:', err);
+        res.status(500).json({ error: 'Error eliminando registros por fecha' });
+    }
 }));
 exports.default = router;
