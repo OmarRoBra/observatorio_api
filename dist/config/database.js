@@ -14,6 +14,7 @@ const HolidayStats_model_1 = __importDefault(require("../models/HolidayStats.mod
 const MonthlyStats_model_1 = __importDefault(require("../models/MonthlyStats.model"));
 const SeasonStats_model_1 = __importDefault(require("../models/SeasonStats.model"));
 const LongWeekendStats_model_1 = __importDefault(require("../models/LongWeekendStats.model"));
+const pdfFront_models_1 = __importDefault(require("../models/pdfFront.models"));
 dotenv_1.default.config();
 const sequelize = new sequelize_typescript_1.Sequelize({
     dialect: 'postgres',
@@ -39,7 +40,8 @@ sequelize.addModels([
     HolidayStats_model_1.default,
     MonthlyStats_model_1.default,
     SeasonStats_model_1.default,
-    LongWeekendStats_model_1.default
+    LongWeekendStats_model_1.default,
+    pdfFront_models_1.default
 ]);
 // (Opcional) Sincroniza las tablas si no usas migraciones
 // sequelize.sync({ alter: true });

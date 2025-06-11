@@ -10,6 +10,7 @@ import cors from 'cors';
 import monthlyStatsRoutes from './routes/monthlyStats';
 import seasonStatsRoutes from './routes/seasonStats';
 import LongWeekendStatsRoutes from './routes/longWeekendStats.routes';
+import pdfFrontRoutes from './routes/pdfsFront.routes';
 
 
 // observatorio_api/src/index.ts
@@ -22,7 +23,8 @@ app.use(cors({
   origin: [
     'https://observatorio-colima.vercel.app',
     'http://localhost:3001',
-    'https://observatorioturisticocolima.org'
+    'https://observatorioturisticocolima.org',
+    'http://localhost:5173'
   ],
   methods: ['GET','POST','PUT','DELETE','OPTIONS'],
   allowedHeaders: ['Content-Type','Authorization'],
@@ -42,6 +44,7 @@ app.use('/info-injection', excelInfo);
 app.use('/monthly-stats', monthlyStatsRoutes);
 app.use('/season-stats', seasonStatsRoutes);
 app.use('/long-weekend-stats', LongWeekendStatsRoutes);
+app.use('/pdf-front', pdfFrontRoutes);
 async function initializeDatabase() {
   try {
     await sequelize.authenticate(); // Verificar la conexión
