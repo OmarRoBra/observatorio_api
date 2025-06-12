@@ -31,4 +31,6 @@ export const login = async (req: Request, res: Response): Promise<void> => {
   } catch (error) {
     res.status(500).json({ message: 'Error logging in', error });
   }
+}
+export const getUserProfile = async (req: Request, res: Response): Promise<void> => {
 };
