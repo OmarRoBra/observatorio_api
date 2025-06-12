@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Pdf from '../models/inventory.model';
+import Pdf from '../models/pdfFront.models';
 
 export const uploadPdf = async (req: Request, res: Response): Promise<void> => {
   try {
