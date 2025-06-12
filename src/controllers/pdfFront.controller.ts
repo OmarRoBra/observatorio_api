@@ -1,132 +1,88 @@
-import { Request, Response, NextFunction } from 'express';
-import PdfFront from '../models/pdfFront.models';
-import multer from 'multer';
-import path from 'path';
+import { Request, Response } from 'express';
+import Pdf from '../models/inventory.model';
 
-// Configuración de multer para subir archivos
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/pdf-front'); // Asegúrate de que esta carpeta exista
-  },
-  filename: (req, file, cb) => {
-    const uniqueName = `${Date.now()}-${file.originalname}`;
-    cb(null, uniqueName);
-  }
-});
-
-export const uploadMiddleware = multer({ 
-  storage,
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype === 'application/pdf') {
-      cb(null, true);
-    } else {
-      cb(new Error('Solo se permiten archivos PDF'));
-    }
-  }
-});
-
-// Crear/Subir PDF
 export const uploadPdf = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { title, category } = req.body;
-    const file = req.file;
+    console.log('Body recibido:', req.body); 
+    const { title, fileUrl, category } = req.body;
 
-    if (!file) {
-      res.status(400).json({ error: 'No se subió ningún archivo' });
+    if (!title || !fileUrl || !category) {
+      res.status(400).json({ 
+        message: 'Title, file URL, and category are required' 
+      });
       return;
     }
 
-    if (!title || !category) {
-      res.status(400).json({ error: 'Título y categoría son requeridos' });
-      return;
-    }
-
-    // Crear la URL del archivo (ajusta según tu configuración)
-    const fileUrl = `/uploads/pdf-front/${file.filename}`;
-
-    const newPdf = await PdfFront.create({
-      title,
-      category,
-      fileUrl
-    });
-
-    res.status(201).json({
-      message: 'PDF subido exitosamente',
-      pdf: newPdf
-    });
-
+    const pdf = await Pdf.create({ title, fileUrl, category });
+    res.status(201).json({ ...pdf.toJSON(), url: pdf.fileUrl });
   } catch (error) {
-    console.error('Error al subir PDF:', error);
-    res.status(500).json({ error: 'Error interno del servidor' });
+    console.error('Error saving PDF:', error);
+    res.status(500).json({ 
+      message: 'Error saving PDF information',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
   }
 };
-
-// Obtener todos los PDFs
+// controllers/inventory.controller.ts
 export const getPdfs = async (req: Request, res: Response): Promise<void> => {
   try {
-    const pdfs = await PdfFront.findAll({
-      order: [['createdAt', 'DESC']]
+    const pdfs = await Pdf.findAll();
+    const mappedPdfs = pdfs.map((pdf: any) => {
+      const obj = pdf.toJSON();
+      return { ...obj, url: obj.fileUrl }; // agrega url
     });
-
-    res.json(pdfs);
+    res.json(mappedPdfs);
   } catch (error) {
-    console.error('Error al obtener PDFs:', error);
-    res.status(500).json({ error: 'Error interno del servidor' });
+    console.error('Error fetching PDFs:', error);
+    res.status(500).json({ 
+      message: 'Error getting PDFs',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
   }
 };
 
-// Actualizar PDF
-export const updatePdf = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { id } = req.params;
-    const { title, category } = req.body;
-
-    const pdf = await PdfFront.findByPk(id);
-    if (!pdf) {
-      res.status(404).json({ error: 'PDF no encontrado' });
-      return;
-    }
-
-    await pdf.update({
-      title: title || pdf.title,
-      category: category || pdf.category
-    });
-
-    res.json({
-      message: 'PDF actualizado exitosamente',
-      pdf
-    });
-
-  } catch (error) {
-    console.error('Error al actualizar PDF:', error);
-    res.status(500).json({ error: 'Error interno del servidor' });
-  }
-};
-
-// Eliminar PDF
 export const deletePdf = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
 
-    const pdf = await PdfFront.findByPk(id);
+    const pdf = await Pdf.findByPk(id);
     if (!pdf) {
-      res.status(404).json({ error: 'PDF no encontrado' });
+      res.status(404).json({ message: 'PDF not found' });
       return;
     }
 
-    // Opcional: eliminar el archivo físico del servidor
-    // const fs = require('fs');
-    // const filePath = path.join(__dirname, '..', pdf.fileUrl);
-    // if (fs.existsSync(filePath)) {
-    //   fs.unlinkSync(filePath);
-    // }
-
     await pdf.destroy();
-
-    res.json({ message: 'PDF eliminado exitosamente' });
-
+    res.json({ message: 'PDF deleted successfully' });
   } catch (error) {
-    console.error('Error al eliminar PDF:', error);
-    res.status(500).json({ error: 'Error interno del servidor' });
+    console.error('Error deleting PDF:', error);
+    res.status(500).json({ 
+      message: 'Error deleting PDF',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+};
+export const updatePdf = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const { title, fileUrl, category } = req.body;
+
+    const pdf = await Pdf.findByPk(id);
+    if (!pdf) {
+      res.status(404).json({ message: 'PDF not found' });
+      return;
+    }
+
+    if (title) pdf.title = title;
+    if (fileUrl) pdf.fileUrl = fileUrl;
+    if (category) pdf.category = category;
+
+    await pdf.save();
+    res.json({ ...pdf.toJSON(), url: pdf.fileUrl });
+  } catch (error) {
+    console.error('Error updating PDF:', error);
+    res.status(500).json({ 
+      message: 'Error updating PDF',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
   }
 };
