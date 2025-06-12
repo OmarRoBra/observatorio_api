@@ -6,7 +6,7 @@ import path from 'path';
 // Configuración de multer para subir archivos
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/pdfFront'); // Asegúrate de que esta carpeta exista
+    cb(null, 'uploads/pdf-front'); // Asegúrate de que esta carpeta exista
   },
   filename: (req, file, cb) => {
     const uniqueName = `${Date.now()}-${file.originalname}`;
@@ -42,7 +42,7 @@ export const uploadPdf = async (req: Request, res: Response): Promise<void> => {
     }
 
     // Crear la URL del archivo (ajusta según tu configuración)
-    const fileUrl = `/uploads/pdfFront/${file.filename}`;
+    const fileUrl = `/uploads/pdf-front/${file.filename}`;
 
     const newPdf = await PdfFront.create({
       title,
