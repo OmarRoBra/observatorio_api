@@ -12,13 +12,15 @@ import seasonStatsRoutes from './routes/seasonStats';
 import LongWeekendStatsRoutes from './routes/longWeekendStats.routes';
 import pdfFrontRoutes from './routes/pdfsFront.routes';
 
+// Importar modelos para asegurar que se registren
+import './models/pdfFront.models';
 
-// observatorio_api/src/index.ts
 export * from './models/HolidayStats.model';
+
 const app = express();
 const port = process.env.PORT || 3000;
 
-// ...
+// CORS
 app.use(cors({
   origin: [
     'https://observatorio-colima.vercel.app',
@@ -28,12 +30,14 @@ app.use(cors({
   ],
   methods: ['GET','POST','PUT','DELETE','OPTIONS'],
   allowedHeaders: ['Content-Type','Authorization'],
-  credentials: false  // o true si necesitas cookies
+  credentials: false
 }));
-
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Servir archivos estáticos (PDFs)
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes
 app.use('/news', newsRoutes);
@@ -45,10 +49,11 @@ app.use('/monthly-stats', monthlyStatsRoutes);
 app.use('/season-stats', seasonStatsRoutes);
 app.use('/long-weekend-stats', LongWeekendStatsRoutes);
 app.use('/pdf-front', pdfFrontRoutes);
+
 async function initializeDatabase() {
   try {
-    await sequelize.authenticate(); // Verificar la conexión
-    await sequelize.sync(); // Sincronizar modelos con la base de datos
+    await sequelize.authenticate();
+    await sequelize.sync();
     console.log('Base de datos sincronizada correctamente.');
   } catch (error) {
     console.error('Error al sincronizar la base de datos:', error);
@@ -60,7 +65,6 @@ initializeDatabase();
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello, World!');
 });
-
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

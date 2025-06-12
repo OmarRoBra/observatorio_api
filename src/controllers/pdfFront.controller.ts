@@ -42,7 +42,7 @@ export const uploadPdf = async (req: Request, res: Response): Promise<void> => {
     }
 
     // Crear la URL del archivo (ajusta según tu configuración)
-    const fileUrl = `/uploads/pdfs/${file.filename}`;
+    const fileUrl = `/uploads/pdfFront/${file.filename}`;
 
     const newPdf = await PdfFront.create({
       title,

@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_typescript_1 = require("sequelize-typescript");
-let Pdf = class Pdf extends sequelize_typescript_1.Model {
+let PdfFront = class PdfFront extends sequelize_typescript_1.Model {
 };
 __decorate([
     (0, sequelize_typescript_1.Column)({
@@ -19,29 +19,29 @@ __decorate([
         autoIncrement: true,
     }),
     __metadata("design:type", Number)
-], Pdf.prototype, "id", void 0);
+], PdfFront.prototype, "id", void 0);
 __decorate([
     (0, sequelize_typescript_1.Column)({
         type: sequelize_typescript_1.DataType.STRING,
         allowNull: false,
     }),
     __metadata("design:type", String)
-], Pdf.prototype, "title", void 0);
+], PdfFront.prototype, "title", void 0);
 __decorate([
     (0, sequelize_typescript_1.Column)({
         type: sequelize_typescript_1.DataType.STRING,
         allowNull: false,
     }),
     __metadata("design:type", String)
-], Pdf.prototype, "fileUrl", void 0);
+], PdfFront.prototype, "fileUrl", void 0);
 __decorate([
     (0, sequelize_typescript_1.Column)({
         type: sequelize_typescript_1.DataType.STRING,
         allowNull: false,
     }),
     __metadata("design:type", String)
-], Pdf.prototype, "category", void 0);
-Pdf = __decorate([
-    (0, sequelize_typescript_1.Table)({ tableName: 'pdfsFront' })
-], Pdf);
-exports.default = Pdf;
+], PdfFront.prototype, "category", void 0);
+PdfFront = __decorate([
+    (0, sequelize_typescript_1.Table)({ tableName: 'pdfFront' }) // Puedes llamarla 'pdfFront' o 'pdfFronts' según tu gusto
+], PdfFront);
+exports.default = PdfFront;

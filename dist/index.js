@@ -33,28 +33,33 @@ const news_routes_1 = __importDefault(require("./routes/news.routes"));
 const inventory_routes_1 = __importDefault(require("./routes/inventory.routes"));
 const excelFeed_1 = __importDefault(require("./routes/excelFeed"));
 const database_1 = __importDefault(require("./config/database"));
+const path_1 = __importDefault(require("path"));
 const cors_1 = __importDefault(require("cors"));
 const monthlyStats_1 = __importDefault(require("./routes/monthlyStats"));
 const seasonStats_1 = __importDefault(require("./routes/seasonStats"));
 const longWeekendStats_routes_1 = __importDefault(require("./routes/longWeekendStats.routes"));
-const pdfFront_routes_1 = __importDefault(require("./routes/pdfFront.routes"));
-// observatorio_api/src/index.ts
+const pdfsFront_routes_1 = __importDefault(require("./routes/pdfsFront.routes"));
+// Importar modelos para asegurar que se registren
+require("./models/pdfFront.models");
 __exportStar(require("./models/HolidayStats.model"), exports);
 const app = (0, express_1.default)();
 const port = process.env.PORT || 3000;
-// ...
+// CORS
 app.use((0, cors_1.default)({
     origin: [
         'https://observatorio-colima.vercel.app',
         'http://localhost:3001',
-        'https://observatorioturisticocolima.org'
+        'https://observatorioturisticocolima.org',
+        'http://localhost:5173'
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: false // o true si necesitas cookies
+    credentials: false
 }));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
+// Servir archivos estáticos (PDFs)
+app.use('/uploads', express_1.default.static(path_1.default.join(__dirname, 'uploads')));
 // Routes
 app.use('/news', news_routes_1.default);
 app.use('/auth', auth_routes_1.default);
@@ -64,12 +69,12 @@ app.use('/info-injection', excelFeed_1.default);
 app.use('/monthly-stats', monthlyStats_1.default);
 app.use('/season-stats', seasonStats_1.default);
 app.use('/long-weekend-stats', longWeekendStats_routes_1.default);
-app.use('/pdf-front', pdfFront_routes_1.default);
+app.use('/pdf-front', pdfsFront_routes_1.default);
 function initializeDatabase() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield database_1.default.authenticate(); // Verificar la conexión
-            yield database_1.default.sync(); // Sincronizar modelos con la base de datos
+            yield database_1.default.authenticate();
+            yield database_1.default.sync();
             console.log('Base de datos sincronizada correctamente.');
         }
         catch (error) {

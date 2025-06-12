@@ -11,7 +11,7 @@ import Holidays     from '../models/HolidayStats.model';
 import MonthlyStats from '../models/MonthlyStats.model';
 import SeasonStats  from '../models/SeasonStats.model';
 import LongWeekendStats from '../models/LongWeekendStats.model';
-import pdfFront     from '../models/pdfsFront.models';
+import pdfFront from '../models/pdfFront.models';
 
 dotenv.config();
 
