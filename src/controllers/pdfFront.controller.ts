@@ -2,22 +2,27 @@ import { Request, Response } from 'express';
 import PdfFront from '../models/pdfFront.model';
 
 // Subir PDF (metadatos y URL, sin subir archivo aquí)
-export const uploadPdf = async (req: Request, res: Response) => {
-  try {
-    const { title, fileUrl, category } = req.body;
-    const pdf = await PdfFront.create({ title, fileUrl, category });
-    res.status(201).json(pdf);
-  } catch (error) {
-    res.status(500).json({ message: 'Error al subir PDF', error });
-  }
-};
 
-export const getPdfs = async (_req: Request, res: Response) => {
+export const uploadPdf = async (req: Request, res: Response): Promise<void> => {
   try {
-    const pdfs = await PdfFront.findAll();
-    res.json(pdfs);
+    console.log('Body recibido:', req.body); 
+    const { title, fileUrl, category } = req.body;
+
+    if (!title || !fileUrl || !category) {
+      res.status(400).json({ 
+        message: 'Title, file URL, and category are required' 
+      });
+      return;
+    }
+
+    const pdf = await PdfFront.create({ title, fileUrl, category });
+    res.status(201).json({ ...pdf.toJSON(), url: pdf.fileUrl });
   } catch (error) {
-    res.status(500).json({ message: 'Error al obtener PDFs', error });
+    console.error('Error saving PDF:', error);
+    res.status(500).json({ 
+      message: 'Error saving PDF information',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
   }
 };
 
@@ -34,7 +39,22 @@ export const deletePdf = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Error al eliminar PDF', error });
   }
 };
-
+export const getPdfs = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const pdfs = await PdfFront.findAll();
+    const mappedPdfs = pdfs.map((pdf: any) => {
+      const obj = pdf.toJSON();
+      return { ...obj, url: obj.fileUrl }; // agrega url
+    });
+    res.json(mappedPdfs);
+  } catch (error) {
+    console.error('Error fetching PDFs:', error);
+    res.status(500).json({ 
+      message: 'Error getting PDFs',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+};
 export const updatePdf = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
