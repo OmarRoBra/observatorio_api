@@ -10,7 +10,7 @@ import cors from 'cors';
 import monthlyStatsRoutes from './routes/monthlyStats';
 import seasonStatsRoutes from './routes/seasonStats';
 import LongWeekendStatsRoutes from './routes/longWeekendStats.routes';
-import pdfFrontRoutes from './routes/pdfsFront.routes';
+import pdfsFrontRoutes from './routes/pdfsFront.routes';
 
 // Importar modelos para asegurar que se registren
 import './models/pdfFront.models';
@@ -48,7 +48,8 @@ app.use('/info-injection', excelInfo);
 app.use('/monthly-stats', monthlyStatsRoutes);
 app.use('/season-stats', seasonStatsRoutes);
 app.use('/long-weekend-stats', LongWeekendStatsRoutes);
-app.use('/pdf-front', pdfFrontRoutes);
+app.use('/pdfs-front', pdfsFrontRoutes);
+
 
 async function initializeDatabase() {
   try {

@@ -69,7 +69,7 @@ app.use('/info-injection', excelFeed_1.default);
 app.use('/monthly-stats', monthlyStats_1.default);
 app.use('/season-stats', seasonStats_1.default);
 app.use('/long-weekend-stats', longWeekendStats_routes_1.default);
-app.use('/pdf-front', pdfsFront_routes_1.default);
+app.use('/pdfs-front', pdfsFront_routes_1.default);
 function initializeDatabase() {
     return __awaiter(this, void 0, void 0, function* () {
         try {

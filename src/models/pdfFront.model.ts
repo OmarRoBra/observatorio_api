@@ -1,6 +1,6 @@
 import { Table, Column, Model, DataType } from 'sequelize-typescript';
 
-@Table({ tableName: 'pdfFront' }) // Puedes llamarla 'pdfFront' o 'pdfFronts' según tu gusto
+@Table({ tableName: 'pdfs_front' })
 export default class PdfFront extends Model {
   @Column({
     type: DataType.INTEGER,

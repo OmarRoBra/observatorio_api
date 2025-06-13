@@ -3,9 +3,9 @@ import { uploadPdf, getPdfs, deletePdf, updatePdf } from '../controllers/pdfFron
 
 const router = express.Router();
 
-router.post('/', uploadPdf);         // Crear PDF
-router.get('/', getPdfs);            // Obtener todos
-router.put('/:id', updatePdf);       // Editar PDF
-router.delete('/:id',  deletePdf);    // Eliminar PDF
+router.post('/', uploadPdf);
+router.get('/', getPdfs);
+router.delete('/:id', deletePdf);
+router.put('/:id', updatePdf);
 
 export default router;

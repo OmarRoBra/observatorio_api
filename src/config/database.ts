@@ -11,7 +11,7 @@ import Holidays     from '../models/HolidayStats.model';
 import MonthlyStats from '../models/MonthlyStats.model';
 import SeasonStats  from '../models/SeasonStats.model';
 import LongWeekendStats from '../models/LongWeekendStats.model';
-import pdfFront from '../models/pdfFront.models';
+import PdfFront from '../models/pdfFront.model';
 
 dotenv.config();
 
@@ -41,7 +41,8 @@ sequelize.addModels([
   MonthlyStats,
   SeasonStats,
   LongWeekendStats,
-  pdfFront
+  PdfFront
+  
 ]);
 
 // (Opcional) Sincroniza las tablas si no usas migraciones
