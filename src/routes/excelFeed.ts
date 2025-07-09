@@ -71,6 +71,15 @@ router.get('/', async (req, res) => {
     res.status(500).json({ error: 'Error fetching holiday stats' });
   }
 });
-// Eliminar una estadística por ID
+// Eliminar todas las estadística 
+router.delete('/all', async (req, res) => {
+  try {
+    await HolidayStats.destroy({ where: {} });
+    res.status(204).send();
+  } catch (err) {
+    console.error('Error deleting holiday stats:', err);
+    res.status(500).json({ error: 'Error deleting holiday stats' });
+  }
+});   
 
 export default router;
