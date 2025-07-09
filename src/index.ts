@@ -13,8 +13,6 @@ import LongWeekendStatsRoutes from './routes/longWeekendStats.routes';
 import pdfsFrontRoutes from './routes/pdfsFront.routes';
 
 // Importar modelos para asegurar que se registren
-import './models/pdfFront.models';
-
 export * from './models/HolidayStats.model';
 
 const app = express();
