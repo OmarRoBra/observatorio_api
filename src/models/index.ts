@@ -1,3 +1,5 @@
+//index.ts
+// observatorio_api/src/models/index.ts
 import { Sequelize } from 'sequelize-typescript';
 import User from './user.model';
 import News from './news.model';

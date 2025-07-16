@@ -1,0 +1,120 @@
+// Tabla para usuarios
+Table users {
+  id integer [primary key]
+  name varchar
+  email varchar
+  password varchar
+  role varchar
+  created_at timestamp
+}
+
+// Tabla para posts
+Table posts {
+  id integer [primary key]
+  title varchar
+  body text
+  user_id integer [not null]
+  status varchar
+  created_at timestamp
+}
+
+// Tabla de relación follows (usuarios que siguen a otros usuarios)
+Table follows {
+  following_user_id integer
+  followed_user_id integer
+  created_at timestamp
+}
+
+// Tabla para noticias
+Table news {
+  id integer [primary key]
+  title varchar
+  content text
+  metadata json
+  imageUrl varchar
+  userId integer [not null]
+}
+
+// Tabla para PDFs
+Table pdfs {
+  id integer [primary key]
+  title varchar
+  fileUrl varchar
+  category varchar
+}
+
+// Tabla para PDFs Front
+Table pdfs_front {
+  id integer [primary key]
+  title varchar
+  fileUrl varchar
+  category varchar
+}
+
+// Tabla holiday_stats
+Table holiday_stats {
+  year integer
+  bridgeName varchar
+  municipality varchar
+  occupancyRate float
+  roomOffer integer
+  occupiedRooms integer
+  availableBeds integer
+  stay float
+  density float
+  nights integer
+  touristsPerNight integer
+  gpd float
+  economicImpact bigint
+  touristFlow integer
+  month varchar
+}
+
+// Tabla long_weekend_stats
+Table long_weekend_stats {
+  id integer [primary key]
+  year integer
+  bridge_name text
+  municipality text
+  occupancy_rate double
+  room_offer integer
+  occupied_rooms integer
+  available_rooms integer
+  average_stay double
+  occupancy_density double
+  nights integer
+  tourists_per_night integer
+  daily_avg_spending double
+  economic_impact bigint
+  tourist_flow integer
+  created_at timestamp
+  updated_at timestamp
+}
+
+// Tabla monthly_stats
+Table monthly_stats {
+  year integer
+  month varchar
+  municipality varchar
+  occupancyRate float
+  touristFlow integer
+  economicImpact bigint
+}
+
+// Tabla season_stats
+Table season_stats {
+  year integer
+  season varchar
+  municipality varchar
+  occupancyRate float
+  roomOffer integer
+  occupiedRooms float
+  availableRooms integer
+  stay float
+  density float
+  touristsPerNight float
+  avgSpending float
+  economicImpact bigint
+  touristFlow float
+}
+
