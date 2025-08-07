@@ -50,5 +50,14 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+// Eliminar todos los registros mensuales
+router.delete('/all', async (req, res) => {
+  try {
+    const deletedCount = await MonthlyStats.destroy({ where: {} });
+    res.status(200).json({ message: `Se eliminaron ${deletedCount} registros.` });
+  } catch (err) {
+    res.status(500).json({ error: 'Error eliminando todos los registros' });
+  }
+});
 
 export default router;

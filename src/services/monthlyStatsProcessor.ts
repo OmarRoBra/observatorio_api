@@ -1,8 +1,15 @@
 import MonthlyStats from '../models/MonthlyStats.model';
 
 function cleanMoney(val: any) {
-  if (typeof val === 'string') return Number(val.replace(/[^0-9.]+/g, ''));
-  return val;
+  if (val === undefined || val === null) return null;
+  if (typeof val === 'number') return val;
+  if (typeof val === 'string') {
+    // Quitar símbolos, espacios, y convertir a número
+    const cleaned = val.trim().replace(/[^0-9.,-]+/g, '').replace(/\s+/g, '').replace(/^0+(?=\d)/, '').replace(',', '.');
+    const num = parseFloat(cleaned);
+    return isNaN(num) ? null : num;
+  }
+  return null;
 }
 
 function parseNumber(val: any) {
