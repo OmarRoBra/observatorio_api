@@ -11,7 +11,7 @@ module.exports = {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
-      
+
       CREATE TABLE IF NOT EXISTS news (
         id SERIAL PRIMARY KEY,
         title VARCHAR(255) NOT NULL,
@@ -20,6 +20,19 @@ module.exports = {
         author_id INTEGER REFERENCES users(id),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE TABLE IF NOT EXISTS monthly_stats (
+        id SERIAL PRIMARY KEY,
+        year INTEGER NOT NULL,
+        month VARCHAR(50) NOT NULL,
+        municipality VARCHAR(255) NOT NULL,
+        occupancyRate FLOAT,
+        touristFlow INTEGER,
+        economicImpact BIGINT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT monthly_stats_unique_constraint UNIQUE (year, month, municipality)
       );
     `);
   },
