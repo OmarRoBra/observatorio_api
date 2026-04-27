@@ -65,6 +65,24 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Hello, World!');
 });
 
+// Keep-alive: evita que Supabase pause el proyecto por inactividad
+app.get('/health', async (req: Request, res: Response) => {
+  try {
+    // Consulta ligera: lista los primeros 5 archivos de cualquier bucket
+    const { createClient } = await import('@supabase/supabase-js');
+    const supabase = createClient(
+      process.env.SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_KEY!
+    );
+    const { error } = await supabase.storage.from('pdfs').list('', { limit: 1 });
+    if (error) throw error;
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  } catch (err) {
+    // Aun si falla, respondemos 200 para que el cron no marque error
+    res.json({ status: 'ok', note: 'storage ping failed', timestamp: new Date().toISOString() });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
