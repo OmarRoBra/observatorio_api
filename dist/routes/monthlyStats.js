@@ -46,6 +46,21 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(500).json({ error: "Error en monthly-stats", details: e });
     }
 }));
+router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { year, month, municipality, occupancyRate, touristFlow, economicImpact } = req.body;
+        if (!year || !month || !municipality || occupancyRate == null || touristFlow == null || economicImpact == null) {
+            res.status(400).json({ error: 'Todos los campos son requeridos.' });
+            return;
+        }
+        const record = yield MonthlyStats_model_1.default.create({ year, month, municipality, occupancyRate, touristFlow, economicImpact });
+        res.status(201).json(record);
+    }
+    catch (err) {
+        console.error('Error creando registro mensual:', err);
+        res.status(500).json({ error: 'Error creando el registro.' });
+    }
+}));
 router.delete('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const deleted = yield MonthlyStats_model_1.default.destroy({ where: { id: req.params.id } });

@@ -39,6 +39,21 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const stats = yield SeasonStats_model_1.default.findAll();
     res.json(stats);
 }));
+router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { year, season, municipality, occupancyRate, roomOffer, occupiedRooms, availableRooms, stay, density, touristsPerNight, avgSpending, economicImpact, touristFlow } = req.body;
+        if (!year || !season || !municipality) {
+            res.status(400).json({ error: 'Año, temporada y municipio son requeridos.' });
+            return;
+        }
+        const record = yield SeasonStats_model_1.default.create({ year, season, municipality, occupancyRate: occupancyRate !== null && occupancyRate !== void 0 ? occupancyRate : 0, roomOffer: roomOffer !== null && roomOffer !== void 0 ? roomOffer : 0, occupiedRooms: occupiedRooms !== null && occupiedRooms !== void 0 ? occupiedRooms : 0, availableRooms: availableRooms !== null && availableRooms !== void 0 ? availableRooms : 0, stay: stay !== null && stay !== void 0 ? stay : 0, density: density !== null && density !== void 0 ? density : 0, touristsPerNight: touristsPerNight !== null && touristsPerNight !== void 0 ? touristsPerNight : 0, avgSpending: avgSpending !== null && avgSpending !== void 0 ? avgSpending : 0, economicImpact: economicImpact !== null && economicImpact !== void 0 ? economicImpact : 0, touristFlow: touristFlow !== null && touristFlow !== void 0 ? touristFlow : 0 });
+        res.status(201).json(record);
+    }
+    catch (err) {
+        console.error('Error creando registro de temporada:', err);
+        res.status(500).json({ error: 'Error creando el registro.' });
+    }
+}));
 router.delete('/by-date', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { start, end } = req.query;

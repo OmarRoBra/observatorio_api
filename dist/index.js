@@ -85,6 +85,10 @@ initializeDatabase();
 app.get('/', (req, res) => {
     res.send('Hello, World!');
 });
+// Keep-alive: evita que Supabase pause el proyecto por inactividad
+app.get('/health', (_req, res) => {
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
