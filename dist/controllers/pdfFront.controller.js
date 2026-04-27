@@ -12,30 +12,31 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updatePdf = exports.deletePdf = exports.getPdfs = exports.uploadPdf = void 0;
+exports.updatePdf = exports.getPdfs = exports.deletePdf = exports.uploadPdf = void 0;
 const pdfFront_model_1 = __importDefault(require("../models/pdfFront.model"));
 // Subir PDF (metadatos y URL, sin subir archivo aquí)
 const uploadPdf = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        console.log('Body recibido:', req.body);
         const { title, fileUrl, category } = req.body;
+        if (!title || !fileUrl || !category) {
+            res.status(400).json({
+                message: 'Title, file URL, and category are required'
+            });
+            return;
+        }
         const pdf = yield pdfFront_model_1.default.create({ title, fileUrl, category });
-        res.status(201).json(pdf);
+        res.status(201).json(Object.assign(Object.assign({}, pdf.toJSON()), { url: pdf.fileUrl }));
     }
     catch (error) {
-        res.status(500).json({ message: 'Error al subir PDF', error });
+        console.error('Error saving PDF:', error);
+        res.status(500).json({
+            message: 'Error saving PDF information',
+            error: error instanceof Error ? error.message : 'Unknown error'
+        });
     }
 });
 exports.uploadPdf = uploadPdf;
-const getPdfs = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const pdfs = yield pdfFront_model_1.default.findAll();
-        res.json(pdfs);
-    }
-    catch (error) {
-        res.status(500).json({ message: 'Error al obtener PDFs', error });
-    }
-});
-exports.getPdfs = getPdfs;
 const deletePdf = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
@@ -52,6 +53,24 @@ const deletePdf = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.deletePdf = deletePdf;
+const getPdfs = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const pdfs = yield pdfFront_model_1.default.findAll();
+        const mappedPdfs = pdfs.map((pdf) => {
+            const obj = pdf.toJSON();
+            return Object.assign(Object.assign({}, obj), { url: obj.fileUrl }); // agrega url
+        });
+        res.json(mappedPdfs);
+    }
+    catch (error) {
+        console.error('Error fetching PDFs:', error);
+        res.status(500).json({
+            message: 'Error getting PDFs',
+            error: error instanceof Error ? error.message : 'Unknown error'
+        });
+    }
+});
+exports.getPdfs = getPdfs;
 const updatePdf = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;

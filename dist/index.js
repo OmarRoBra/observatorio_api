@@ -40,7 +40,6 @@ const seasonStats_1 = __importDefault(require("./routes/seasonStats"));
 const longWeekendStats_routes_1 = __importDefault(require("./routes/longWeekendStats.routes"));
 const pdfsFront_routes_1 = __importDefault(require("./routes/pdfsFront.routes"));
 // Importar modelos para asegurar que se registren
-require("./models/pdfFront.models");
 __exportStar(require("./models/HolidayStats.model"), exports);
 const app = (0, express_1.default)();
 const port = process.env.PORT || 3000;
