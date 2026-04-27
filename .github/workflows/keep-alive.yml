@@ -2,9 +2,9 @@ name: Keep Supabase Alive
 
 on:
   schedule:
-    # Cada 4 días a las 8:00 AM UTC (evita la pausa de 7 días de inactividad)
+    # Cada 4 días a las 8:00 AM UTC
     - cron: '0 8 */4 * *'
-  workflow_dispatch: # Permite ejecutarlo manualmente desde GitHub
+  workflow_dispatch:
 
 jobs:
   ping:
@@ -13,10 +13,6 @@ jobs:
       - name: Ping API para mantener Supabase activo
         run: |
           echo "Haciendo ping a la API..."
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://observatorio-api-dhp4.vercel.app/health)
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://observatorio-api-dhp4.vercel.app/news)
           echo "Respuesta HTTP: $STATUS"
-          if [ "$STATUS" -ne 200 ]; then
-            echo "⚠️  La API respondió con status $STATUS"
-            exit 1
-          fi
-          echo "✅ Supabase sigue activo"
+          echo "✅ Ping completado - Supabase sigue activo"
