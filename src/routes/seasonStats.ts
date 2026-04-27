@@ -33,6 +33,21 @@ router.get('/', async (req, res) => {
   const stats = await SeasonStats.findAll();
   res.json(stats);
 });
+
+router.post('/', async (req, res) => {
+  try {
+    const { year, season, municipality, occupancyRate, roomOffer, occupiedRooms, availableRooms, stay, density, touristsPerNight, avgSpending, economicImpact, touristFlow } = req.body;
+    if (!year || !season || !municipality) {
+      res.status(400).json({ error: 'Año, temporada y municipio son requeridos.' });
+      return;
+    }
+    const record = await SeasonStats.create({ year, season, municipality, occupancyRate: occupancyRate ?? 0, roomOffer: roomOffer ?? 0, occupiedRooms: occupiedRooms ?? 0, availableRooms: availableRooms ?? 0, stay: stay ?? 0, density: density ?? 0, touristsPerNight: touristsPerNight ?? 0, avgSpending: avgSpending ?? 0, economicImpact: economicImpact ?? 0, touristFlow: touristFlow ?? 0 });
+    res.status(201).json(record);
+  } catch (err) {
+    console.error('Error creando registro de temporada:', err);
+    res.status(500).json({ error: 'Error creando el registro.' });
+  }
+});
 router.delete('/by-date', async (req: Request, res: Response) => {
   try {
     const { start, end } = req.query as { start?: string; end?: string };

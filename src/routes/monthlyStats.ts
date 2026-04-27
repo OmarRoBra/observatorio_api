@@ -40,6 +40,21 @@ router.get('/', async (req, res) => {
     res.status(500).json({ error: "Error en monthly-stats", details: e });
   }
 });
+router.post('/', async (req, res) => {
+  try {
+    const { year, month, municipality, occupancyRate, touristFlow, economicImpact } = req.body;
+    if (!year || !month || !municipality || occupancyRate == null || touristFlow == null || economicImpact == null) {
+      res.status(400).json({ error: 'Todos los campos son requeridos.' });
+      return;
+    }
+    const record = await MonthlyStats.create({ year, month, municipality, occupancyRate, touristFlow, economicImpact });
+    res.status(201).json(record);
+  } catch (err) {
+    console.error('Error creando registro mensual:', err);
+    res.status(500).json({ error: 'Error creando el registro.' });
+  }
+});
+
 router.delete('/:id', async (req, res) => {
   try {
     const deleted = await MonthlyStats.destroy({ where: { id: req.params.id } });

@@ -41,6 +41,22 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Insertar registro individual
+router.post('/', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { year, bridge_name, municipality, occupancy_rate, room_offer, occupied_rooms, available_rooms, average_stay, occupancy_density, nights, tourists_per_night, daily_avg_spending, economic_impact, tourist_flow } = req.body;
+    if (!year || !bridge_name || !municipality) {
+      res.status(400).json({ error: 'Año, puente y municipio son requeridos.' });
+      return;
+    }
+    const record = await LongWeekendStats.create({ year, bridge_name, municipality, occupancy_rate: occupancy_rate ?? 0, room_offer: room_offer ?? 0, occupied_rooms: occupied_rooms ?? 0, available_rooms: available_rooms ?? 0, average_stay: average_stay ?? 0, occupancy_density: occupancy_density ?? 0, nights: nights ?? 0, tourists_per_night: tourists_per_night ?? 0, daily_avg_spending: daily_avg_spending ?? 0, economic_impact: economic_impact ?? 0, tourist_flow: tourist_flow ?? 0 });
+    res.status(201).json(record);
+  } catch (err) {
+    console.error('Error creando registro de fin de semana largo:', err);
+    res.status(500).json({ error: 'Error creando el registro.' });
+  }
+});
+
 // Eliminar registro por ID
 router.delete('/:id', async (req, res) => {
   try {
