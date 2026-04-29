@@ -55,6 +55,25 @@ router.post('/', async (req, res) => {
   }
 });
 
+router.put('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { year, month, municipality, occupancyRate, touristFlow, economicImpact } = req.body;
+    
+    const record = await MonthlyStats.findByPk(id);
+    if (!record) {
+      res.status(404).json({ error: 'Registro no encontrado.' });
+      return;
+    }
+
+    await record.update({ year, month, municipality, occupancyRate, touristFlow, economicImpact });
+    res.json(record);
+  } catch (err) {
+    console.error('Error actualizando registro mensual:', err);
+    res.status(500).json({ error: 'Error actualizando el registro.' });
+  }
+});
+
 router.delete('/:id', async (req, res) => {
   try {
     const deleted = await MonthlyStats.destroy({ where: { id: req.params.id } });

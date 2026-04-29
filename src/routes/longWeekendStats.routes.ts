@@ -57,6 +57,26 @@ router.post('/', async (req: Request, res: Response): Promise<void> => {
   }
 });
 
+// Editar registro individual
+router.put('/:id', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const { year, bridge_name, municipality, occupancy_rate, room_offer, occupied_rooms, available_rooms, average_stay, occupancy_density, nights, tourists_per_night, daily_avg_spending, economic_impact, tourist_flow } = req.body;
+    
+    const record = await LongWeekendStats.findByPk(id);
+    if (!record) {
+      res.status(404).json({ error: 'Registro no encontrado.' });
+      return;
+    }
+
+    await record.update({ year, bridge_name, municipality, occupancy_rate: occupancy_rate ?? record.occupancy_rate, room_offer: room_offer ?? record.room_offer, occupied_rooms: occupied_rooms ?? record.occupied_rooms, available_rooms: available_rooms ?? record.available_rooms, average_stay: average_stay ?? record.average_stay, occupancy_density: occupancy_density ?? record.occupancy_density, nights: nights ?? record.nights, tourists_per_night: tourists_per_night ?? record.tourists_per_night, daily_avg_spending: daily_avg_spending ?? record.daily_avg_spending, economic_impact: economic_impact ?? record.economic_impact, tourist_flow: tourist_flow ?? record.tourist_flow });
+    res.json(record);
+  } catch (err) {
+    console.error('Error actualizando registro de fin de semana largo:', err);
+    res.status(500).json({ error: 'Error actualizando el registro.' });
+  }
+});
+
 // Eliminar registro por ID
 router.delete('/:id', async (req, res) => {
   try {

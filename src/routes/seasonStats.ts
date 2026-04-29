@@ -48,6 +48,25 @@ router.post('/', async (req, res) => {
     res.status(500).json({ error: 'Error creando el registro.' });
   }
 });
+router.put('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { year, season, municipality, occupancyRate, roomOffer, occupiedRooms, availableRooms, stay, density, touristsPerNight, avgSpending, economicImpact, touristFlow } = req.body;
+    
+    const record = await SeasonStats.findByPk(id);
+    if (!record) {
+      res.status(404).json({ error: 'Registro no encontrado.' });
+      return;
+    }
+
+    await record.update({ year, season, municipality, occupancyRate: occupancyRate ?? record.occupancyRate, roomOffer: roomOffer ?? record.roomOffer, occupiedRooms: occupiedRooms ?? record.occupiedRooms, availableRooms: availableRooms ?? record.availableRooms, stay: stay ?? record.stay, density: density ?? record.density, touristsPerNight: touristsPerNight ?? record.touristsPerNight, avgSpending: avgSpending ?? record.avgSpending, economicImpact: economicImpact ?? record.economicImpact, touristFlow: touristFlow ?? record.touristFlow });
+    res.json(record);
+  } catch (err) {
+    console.error('Error actualizando registro de temporada:', err);
+    res.status(500).json({ error: 'Error actualizando el registro.' });
+  }
+});
+
 router.delete('/by-date', async (req: Request, res: Response) => {
   try {
     const { start, end } = req.query as { start?: string; end?: string };
