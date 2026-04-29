@@ -67,6 +67,21 @@ router.put('/:id', async (req, res) => {
   }
 });
 
+router.post('/delete-batch', async (req, res) => {
+  try {
+    const { ids } = req.body;
+    if (!Array.isArray(ids) || ids.length === 0) {
+      res.status(400).json({ error: 'Se requiere un arreglo de IDs.' });
+      return;
+    }
+    await SeasonStats.destroy({ where: { id: ids } });
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Error eliminando lote de temporada:', err);
+    res.status(500).json({ error: 'Error eliminando el lote.' });
+  }
+});
+
 router.delete('/by-date', async (req: Request, res: Response) => {
   try {
     const { start, end } = req.query as { start?: string; end?: string };

@@ -77,6 +77,22 @@ router.put('/:id', async (req: Request, res: Response): Promise<void> => {
   }
 });
 
+// Eliminar lote de registros
+router.post('/delete-batch', async (req, res): Promise<void> => {
+  try {
+    const { ids } = req.body;
+    if (!Array.isArray(ids) || ids.length === 0) {
+      res.status(400).json({ error: 'Se requiere un arreglo de IDs.' });
+      return;
+    }
+    await LongWeekendStats.destroy({ where: { id: ids } });
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Error eliminando lote de fines de semana:', err);
+    res.status(500).json({ error: 'Error eliminando el lote.' });
+  }
+});
+
 // Eliminar registro por ID
 router.delete('/:id', async (req, res) => {
   try {

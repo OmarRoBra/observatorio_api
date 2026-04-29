@@ -78,6 +78,21 @@ router.put('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         res.status(500).json({ error: 'Error actualizando el registro.' });
     }
 }));
+router.post('/delete-batch', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { ids } = req.body;
+        if (!Array.isArray(ids) || ids.length === 0) {
+            res.status(400).json({ error: 'Se requiere un arreglo de IDs.' });
+            return;
+        }
+        yield MonthlyStats_model_1.default.destroy({ where: { id: ids } });
+        res.json({ success: true });
+    }
+    catch (err) {
+        console.error('Error eliminando lote mensual:', err);
+        res.status(500).json({ error: 'Error eliminando el lote.' });
+    }
+}));
 router.delete('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const deleted = yield MonthlyStats_model_1.default.destroy({ where: { id: req.params.id } });

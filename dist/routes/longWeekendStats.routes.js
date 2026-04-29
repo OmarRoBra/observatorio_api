@@ -88,6 +88,22 @@ router.put('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         res.status(500).json({ error: 'Error actualizando el registro.' });
     }
 }));
+// Eliminar lote de registros
+router.post('/delete-batch', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { ids } = req.body;
+        if (!Array.isArray(ids) || ids.length === 0) {
+            res.status(400).json({ error: 'Se requiere un arreglo de IDs.' });
+            return;
+        }
+        yield LongWeekendStats_model_1.default.destroy({ where: { id: ids } });
+        res.json({ success: true });
+    }
+    catch (err) {
+        console.error('Error eliminando lote de fines de semana:', err);
+        res.status(500).json({ error: 'Error eliminando el lote.' });
+    }
+}));
 // Eliminar registro por ID
 router.delete('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
