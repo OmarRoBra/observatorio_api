@@ -89,6 +89,9 @@ app.get('/', (req, res) => {
 app.get('/health', (_req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
-});
+if (require.main === module) {
+    app.listen(port, () => {
+        console.log(`Server is running on http://localhost:${port}`);
+    });
+}
+exports.default = app;
