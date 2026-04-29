@@ -94,4 +94,4 @@ if (require.main === module) {
         console.log(`Server is running on http://localhost:${port}`);
     });
 }
-module.exports = app;
+exports.default = app;
