@@ -54,6 +54,23 @@ router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(500).json({ error: 'Error creando el registro.' });
     }
 }));
+router.put('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const { year, season, municipality, occupancyRate, roomOffer, occupiedRooms, availableRooms, stay, density, touristsPerNight, avgSpending, economicImpact, touristFlow } = req.body;
+        const record = yield SeasonStats_model_1.default.findByPk(id);
+        if (!record) {
+            res.status(404).json({ error: 'Registro no encontrado.' });
+            return;
+        }
+        yield record.update({ year, season, municipality, occupancyRate: occupancyRate !== null && occupancyRate !== void 0 ? occupancyRate : record.occupancyRate, roomOffer: roomOffer !== null && roomOffer !== void 0 ? roomOffer : record.roomOffer, occupiedRooms: occupiedRooms !== null && occupiedRooms !== void 0 ? occupiedRooms : record.occupiedRooms, availableRooms: availableRooms !== null && availableRooms !== void 0 ? availableRooms : record.availableRooms, stay: stay !== null && stay !== void 0 ? stay : record.stay, density: density !== null && density !== void 0 ? density : record.density, touristsPerNight: touristsPerNight !== null && touristsPerNight !== void 0 ? touristsPerNight : record.touristsPerNight, avgSpending: avgSpending !== null && avgSpending !== void 0 ? avgSpending : record.avgSpending, economicImpact: economicImpact !== null && economicImpact !== void 0 ? economicImpact : record.economicImpact, touristFlow: touristFlow !== null && touristFlow !== void 0 ? touristFlow : record.touristFlow });
+        res.json(record);
+    }
+    catch (err) {
+        console.error('Error actualizando registro de temporada:', err);
+        res.status(500).json({ error: 'Error actualizando el registro.' });
+    }
+}));
 router.delete('/by-date', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { start, end } = req.query;

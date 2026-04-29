@@ -61,6 +61,23 @@ router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(500).json({ error: 'Error creando el registro.' });
     }
 }));
+router.put('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const { year, month, municipality, occupancyRate, touristFlow, economicImpact } = req.body;
+        const record = yield MonthlyStats_model_1.default.findByPk(id);
+        if (!record) {
+            res.status(404).json({ error: 'Registro no encontrado.' });
+            return;
+        }
+        yield record.update({ year, month, municipality, occupancyRate, touristFlow, economicImpact });
+        res.json(record);
+    }
+    catch (err) {
+        console.error('Error actualizando registro mensual:', err);
+        res.status(500).json({ error: 'Error actualizando el registro.' });
+    }
+}));
 router.delete('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const deleted = yield MonthlyStats_model_1.default.destroy({ where: { id: req.params.id } });
