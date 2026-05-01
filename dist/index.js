@@ -39,6 +39,7 @@ const monthlyStats_1 = __importDefault(require("./routes/monthlyStats"));
 const seasonStats_1 = __importDefault(require("./routes/seasonStats"));
 const longWeekendStats_routes_1 = __importDefault(require("./routes/longWeekendStats.routes"));
 const pdfsFront_routes_1 = __importDefault(require("./routes/pdfsFront.routes"));
+const activityLog_routes_1 = __importDefault(require("./routes/activityLog.routes"));
 // Importar modelos para asegurar que se registren
 __exportStar(require("./models/HolidayStats.model"), exports);
 const app = (0, express_1.default)();
@@ -69,6 +70,7 @@ app.use('/monthly-stats', monthlyStats_1.default);
 app.use('/season-stats', seasonStats_1.default);
 app.use('/long-weekend-stats', longWeekendStats_routes_1.default);
 app.use('/pdfs-front', pdfsFront_routes_1.default);
+app.use('/activity-logs', activityLog_routes_1.default);
 function initializeDatabase() {
     return __awaiter(this, void 0, void 0, function* () {
         try {

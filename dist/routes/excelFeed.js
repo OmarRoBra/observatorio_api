@@ -19,6 +19,8 @@ const excelReader_1 = require("../utils/excelReader");
 const sequelize_1 = require("sequelize");
 const HolidayStats_model_1 = __importDefault(require("../models/HolidayStats.model"));
 const uploadInfoExcell_1 = require("../services/uploadInfoExcell");
+const activityLog_service_1 = require("../services/activityLog.service");
+const models_1 = require("../models");
 const router = (0, express_1.Router)();
 router.post('/upload-excel', upload_1.upload.single('file'), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -28,6 +30,13 @@ router.post('/upload-excel', upload_1.upload.single('file'), (req, res) => __awa
         }
         const data = (0, excelReader_1.readExcelFromBuffer)(req.file.buffer);
         yield (0, uploadInfoExcell_1.insertHolidayStatsFromExcel)(data);
+        const user = yield models_1.User.findByPk(req.userId);
+        yield (0, activityLog_service_1.createActivityLog)({
+            user: (user === null || user === void 0 ? void 0 : user.email) || "unknow",
+            action: "Subio archivo excel",
+            module: "excel-feed",
+            details: `Se ha subido un archivo excel con el nombre ${req.file.originalname}`
+        });
         res.status(200).json({ message: `Archivo  procesado correctamente.` });
     }
     catch (error) {

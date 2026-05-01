@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import User from "../models/user.model";
+import bcrypt from "bcrypt";
 
 export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -24,11 +25,13 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
       return;
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     // Crear el usuario
     const user = await User.create({
       name,
       email,
-      password, // Asumiendo que el modelo hashea la contraseña
+      password: hashedPassword,
       role: role || 'editor'
     });
 

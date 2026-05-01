@@ -18,6 +18,8 @@ const excelReader_1 = require("../utils/excelReader");
 const seasonStatsProcessor_1 = require("../services/seasonStatsProcessor");
 const SeasonStats_model_1 = __importDefault(require("../models/SeasonStats.model"));
 const sequelize_1 = require("sequelize");
+const activityLog_service_1 = require("../services/activityLog.service");
+const models_1 = require("../models");
 const router = (0, express_1.Router)();
 router.post('/upload-excel', upload_1.upload.single('file'), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -27,11 +29,17 @@ router.post('/upload-excel', upload_1.upload.single('file'), (req, res) => __awa
         }
         const data = (0, excelReader_1.readExcelFromBuffer)(req.file.buffer);
         yield (0, seasonStatsProcessor_1.insertSeasonStatsFromExcel)(data);
-        res.status(200).json({ message: `Archivo  procesado correctamente.` });
+        const user = yield models_1.User.findByPk(req.userId);
+        yield (0, activityLog_service_1.createActivityLog)({
+            user: (user === null || user === void 0 ? void 0 : user.email) || 'unknown',
+            action: 'Subió Excel de temporadas',
+            section: 'season-stats',
+            details: `Archivo: ${req.file.originalname}`,
+        });
+        res.status(200).json({ message: `Archivo procesado correctamente.` });
     }
     catch (error) {
         console.error(error);
-        console.log(error);
         res.status(500).json({ message: 'Error procesando el archivo.' });
     }
 }));
@@ -47,6 +55,13 @@ router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             return;
         }
         const record = yield SeasonStats_model_1.default.create({ year, season, municipality, occupancyRate: occupancyRate !== null && occupancyRate !== void 0 ? occupancyRate : 0, roomOffer: roomOffer !== null && roomOffer !== void 0 ? roomOffer : 0, occupiedRooms: occupiedRooms !== null && occupiedRooms !== void 0 ? occupiedRooms : 0, availableRooms: availableRooms !== null && availableRooms !== void 0 ? availableRooms : 0, stay: stay !== null && stay !== void 0 ? stay : 0, density: density !== null && density !== void 0 ? density : 0, touristsPerNight: touristsPerNight !== null && touristsPerNight !== void 0 ? touristsPerNight : 0, avgSpending: avgSpending !== null && avgSpending !== void 0 ? avgSpending : 0, economicImpact: economicImpact !== null && economicImpact !== void 0 ? economicImpact : 0, touristFlow: touristFlow !== null && touristFlow !== void 0 ? touristFlow : 0 });
+        const user = yield models_1.User.findByPk(req.userId);
+        yield (0, activityLog_service_1.createActivityLog)({
+            user: (user === null || user === void 0 ? void 0 : user.email) || 'unknown',
+            action: 'Creó registro de temporada',
+            section: 'season-stats',
+            details: `Nuevo registro con ID ${record.id}`,
+        });
         res.status(201).json(record);
     }
     catch (err) {
@@ -64,6 +79,13 @@ router.put('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             return;
         }
         yield record.update({ year, season, municipality, occupancyRate: occupancyRate !== null && occupancyRate !== void 0 ? occupancyRate : record.occupancyRate, roomOffer: roomOffer !== null && roomOffer !== void 0 ? roomOffer : record.roomOffer, occupiedRooms: occupiedRooms !== null && occupiedRooms !== void 0 ? occupiedRooms : record.occupiedRooms, availableRooms: availableRooms !== null && availableRooms !== void 0 ? availableRooms : record.availableRooms, stay: stay !== null && stay !== void 0 ? stay : record.stay, density: density !== null && density !== void 0 ? density : record.density, touristsPerNight: touristsPerNight !== null && touristsPerNight !== void 0 ? touristsPerNight : record.touristsPerNight, avgSpending: avgSpending !== null && avgSpending !== void 0 ? avgSpending : record.avgSpending, economicImpact: economicImpact !== null && economicImpact !== void 0 ? economicImpact : record.economicImpact, touristFlow: touristFlow !== null && touristFlow !== void 0 ? touristFlow : record.touristFlow });
+        const user = yield models_1.User.findByPk(req.userId);
+        yield (0, activityLog_service_1.createActivityLog)({
+            user: (user === null || user === void 0 ? void 0 : user.email) || 'unknown',
+            action: 'Editó registro de temporada',
+            section: 'season-stats',
+            details: `Registro con ID ${id} actualizado`,
+        });
         res.json(record);
     }
     catch (err) {
@@ -79,6 +101,13 @@ router.post('/delete-batch', (req, res) => __awaiter(void 0, void 0, void 0, fun
             return;
         }
         yield SeasonStats_model_1.default.destroy({ where: { id: ids } });
+        const user = yield models_1.User.findByPk(req.userId);
+        yield (0, activityLog_service_1.createActivityLog)({
+            user: (user === null || user === void 0 ? void 0 : user.email) || 'unknown',
+            action: 'Eliminó lote de temporadas',
+            section: 'season-stats',
+            details: `IDs eliminados: ${ids.join(', ')}`,
+        });
         res.json({ success: true });
     }
     catch (err) {
@@ -93,24 +122,18 @@ router.delete('/by-date', (req, res) => __awaiter(void 0, void 0, void 0, functi
             res.status(400).json({ error: 'Debe indicar al menos fecha start (YYYY-MM-DD)' });
             return;
         }
-        // Construimos la condición
-        const where = {
-            date: {
-                // >= start
-                [sequelize_1.Op.gte]: new Date(start),
-            }
-        };
-        if (end) {
-            // <= end (solo si end viene)
+        const where = { date: { [sequelize_1.Op.gte]: new Date(start) } };
+        if (end)
             where.date[sequelize_1.Op.lte] = new Date(end);
-        }
-        // Ejecutamos el borrado en lote
         const count = yield SeasonStats_model_1.default.destroy({ where });
-        res.json({
-            success: true,
-            deletedCount: count,
-            message: `${count} registros eliminados desde ${start}${end ? ` hasta ${end}` : ''}.`
+        const user = yield models_1.User.findByPk(req.userId);
+        yield (0, activityLog_service_1.createActivityLog)({
+            user: (user === null || user === void 0 ? void 0 : user.email) || 'unknown',
+            action: 'Eliminó temporadas por rango de fecha',
+            section: 'season-stats',
+            details: `${count} registros eliminados (${start}${end ? ` hasta ${end}` : ''})`,
         });
+        res.json({ success: true, deletedCount: count, message: `${count} registros eliminados desde ${start}${end ? ` hasta ${end}` : ''}.` });
     }
     catch (err) {
         console.error('Error eliminando por fecha:', err);

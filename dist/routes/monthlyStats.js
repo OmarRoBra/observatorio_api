@@ -17,6 +17,8 @@ const upload_1 = require("../middleware/upload");
 const excelReader_1 = require("../utils/excelReader");
 const monthlyStatsProcessor_1 = require("../services/monthlyStatsProcessor");
 const MonthlyStats_model_1 = __importDefault(require("../models/MonthlyStats.model"));
+const activityLog_service_1 = require("../services/activityLog.service");
+const models_1 = require("../models");
 const router = (0, express_1.Router)();
 router.post('/upload-excel', upload_1.upload.single('file'), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -26,6 +28,13 @@ router.post('/upload-excel', upload_1.upload.single('file'), (req, res) => __awa
         }
         const data = (0, excelReader_1.readExcelFromBuffer)(req.file.buffer);
         yield (0, monthlyStatsProcessor_1.insertMonthlyStatsFromExcel)(data);
+        const user = yield models_1.User.findByPk(req.userId);
+        yield (0, activityLog_service_1.createActivityLog)({
+            user: (user === null || user === void 0 ? void 0 : user.email) || 'unknown',
+            action: 'Subió archivo excel',
+            section: 'monthly-stats',
+            details: `Se ha subido un archivo excel con el nombre ${req.file.originalname}`,
+        });
         res.status(200).json({ message: `Archivo  procesado correctamente.` });
     }
     catch (error) {
@@ -54,6 +63,13 @@ router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             return;
         }
         const record = yield MonthlyStats_model_1.default.create({ year, month, municipality, occupancyRate, touristFlow, economicImpact });
+        const user = yield models_1.User.findByPk(req.userId);
+        yield (0, activityLog_service_1.createActivityLog)({
+            user: (user === null || user === void 0 ? void 0 : user.email) || 'unknown',
+            action: 'Creó registro mensual',
+            section: 'monthly-stats',
+            details: `Nuevo registro creado con ID ${record.id}`,
+        });
         res.status(201).json(record);
     }
     catch (err) {
@@ -71,6 +87,13 @@ router.put('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             return;
         }
         yield record.update({ year, month, municipality, occupancyRate, touristFlow, economicImpact });
+        const user = yield models_1.User.findByPk(req.userId);
+        yield (0, activityLog_service_1.createActivityLog)({
+            user: (user === null || user === void 0 ? void 0 : user.email) || 'unknown',
+            action: 'Editó registro mensual',
+            section: 'monthly-stats',
+            details: `Registro con ID ${id} actualizado`,
+        });
         res.json(record);
     }
     catch (err) {
@@ -85,6 +108,13 @@ router.post('/delete-batch', (req, res) => __awaiter(void 0, void 0, void 0, fun
             res.status(400).json({ error: 'Se requiere un arreglo de IDs.' });
             return;
         }
+        const user = yield models_1.User.findByPk(req.userId);
+        yield (0, activityLog_service_1.createActivityLog)({
+            user: (user === null || user === void 0 ? void 0 : user.email) || 'unknown',
+            action: 'Eliminó registro mensual',
+            section: 'monthly-stats',
+            details: `Se eliminó el registro con ID ${ids.join(", ")}`,
+        });
         yield MonthlyStats_model_1.default.destroy({ where: { id: ids } });
         res.json({ success: true });
     }
@@ -96,10 +126,19 @@ router.post('/delete-batch', (req, res) => __awaiter(void 0, void 0, void 0, fun
 router.delete('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const deleted = yield MonthlyStats_model_1.default.destroy({ where: { id: req.params.id } });
-        if (deleted)
-            res.json({ success: true });
-        else
+        if (!deleted) {
             res.status(404).json({ error: 'No encontrado' });
+            return;
+        }
+        // Log DENTRO del try, solo si el borrado fue exitoso
+        const user = yield models_1.User.findByPk(req.userId);
+        yield (0, activityLog_service_1.createActivityLog)({
+            user: (user === null || user === void 0 ? void 0 : user.email) || 'unknown',
+            action: 'Eliminó registro mensual',
+            section: 'monthly-stats',
+            details: `Se eliminó el registro con ID ${req.params.id}`,
+        });
+        res.json({ success: true });
     }
     catch (err) {
         res.status(500).json({ error: 'Error eliminando el registro' });

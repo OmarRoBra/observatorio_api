@@ -18,6 +18,8 @@ const excelReader_1 = require("../utils/excelReader");
 const LongWeekendStats_model_1 = __importDefault(require("../models/LongWeekendStats.model"));
 const uploadLongWeekendStatsExcel_1 = require("../services/uploadLongWeekendStatsExcel");
 const sequelize_1 = require("sequelize");
+const activityLog_service_1 = require("../services/activityLog.service");
+const models_1 = require("../models");
 const router = (0, express_1.Router)();
 // Subir Excel
 router.post('/upload-excel', upload_1.upload.single('file'), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -28,6 +30,13 @@ router.post('/upload-excel', upload_1.upload.single('file'), (req, res) => __awa
         }
         const data = (0, excelReader_1.readExcelFromBuffer)(req.file.buffer);
         yield (0, uploadLongWeekendStatsExcel_1.insertLongWeekendStatsFromExcel)(data);
+        const user = yield models_1.User.findByPk(req.userId);
+        yield (0, activityLog_service_1.createActivityLog)({
+            user: (user === null || user === void 0 ? void 0 : user.email) || 'unknown',
+            action: 'Subió Excel de fines de semana largos',
+            section: 'long-weekend-stats',
+            details: `Archivo: ${req.file.originalname}`,
+        });
         res.status(200).json({ message: 'Archivo procesado correctamente.' });
     }
     catch (error) {
@@ -63,6 +72,13 @@ router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             return;
         }
         const record = yield LongWeekendStats_model_1.default.create({ year, bridge_name, municipality, occupancy_rate: occupancy_rate !== null && occupancy_rate !== void 0 ? occupancy_rate : 0, room_offer: room_offer !== null && room_offer !== void 0 ? room_offer : 0, occupied_rooms: occupied_rooms !== null && occupied_rooms !== void 0 ? occupied_rooms : 0, available_rooms: available_rooms !== null && available_rooms !== void 0 ? available_rooms : 0, average_stay: average_stay !== null && average_stay !== void 0 ? average_stay : 0, occupancy_density: occupancy_density !== null && occupancy_density !== void 0 ? occupancy_density : 0, nights: nights !== null && nights !== void 0 ? nights : 0, tourists_per_night: tourists_per_night !== null && tourists_per_night !== void 0 ? tourists_per_night : 0, daily_avg_spending: daily_avg_spending !== null && daily_avg_spending !== void 0 ? daily_avg_spending : 0, economic_impact: economic_impact !== null && economic_impact !== void 0 ? economic_impact : 0, tourist_flow: tourist_flow !== null && tourist_flow !== void 0 ? tourist_flow : 0 });
+        const user = yield models_1.User.findByPk(req.userId);
+        yield (0, activityLog_service_1.createActivityLog)({
+            user: (user === null || user === void 0 ? void 0 : user.email) || 'unknown',
+            action: 'Creó registro de fin de semana largo',
+            section: 'long-weekend-stats',
+            details: `Nuevo registro con ID ${record.id}`,
+        });
         res.status(201).json(record);
     }
     catch (err) {
@@ -81,6 +97,13 @@ router.put('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             return;
         }
         yield record.update({ year, bridge_name, municipality, occupancy_rate: occupancy_rate !== null && occupancy_rate !== void 0 ? occupancy_rate : record.occupancy_rate, room_offer: room_offer !== null && room_offer !== void 0 ? room_offer : record.room_offer, occupied_rooms: occupied_rooms !== null && occupied_rooms !== void 0 ? occupied_rooms : record.occupied_rooms, available_rooms: available_rooms !== null && available_rooms !== void 0 ? available_rooms : record.available_rooms, average_stay: average_stay !== null && average_stay !== void 0 ? average_stay : record.average_stay, occupancy_density: occupancy_density !== null && occupancy_density !== void 0 ? occupancy_density : record.occupancy_density, nights: nights !== null && nights !== void 0 ? nights : record.nights, tourists_per_night: tourists_per_night !== null && tourists_per_night !== void 0 ? tourists_per_night : record.tourists_per_night, daily_avg_spending: daily_avg_spending !== null && daily_avg_spending !== void 0 ? daily_avg_spending : record.daily_avg_spending, economic_impact: economic_impact !== null && economic_impact !== void 0 ? economic_impact : record.economic_impact, tourist_flow: tourist_flow !== null && tourist_flow !== void 0 ? tourist_flow : record.tourist_flow });
+        const user = yield models_1.User.findByPk(req.userId);
+        yield (0, activityLog_service_1.createActivityLog)({
+            user: (user === null || user === void 0 ? void 0 : user.email) || 'unknown',
+            action: 'Editó registro de fin de semana largo',
+            section: 'long-weekend-stats',
+            details: `Registro con ID ${id} actualizado`,
+        });
         res.json(record);
     }
     catch (err) {
@@ -97,6 +120,13 @@ router.post('/delete-batch', (req, res) => __awaiter(void 0, void 0, void 0, fun
             return;
         }
         yield LongWeekendStats_model_1.default.destroy({ where: { id: ids } });
+        const user = yield models_1.User.findByPk(req.userId);
+        yield (0, activityLog_service_1.createActivityLog)({
+            user: (user === null || user === void 0 ? void 0 : user.email) || 'unknown',
+            action: 'Eliminó lote de fines de semana largos',
+            section: 'long-weekend-stats',
+            details: `IDs eliminados: ${ids.join(', ')}`,
+        });
         res.json({ success: true });
     }
     catch (err) {
@@ -108,10 +138,18 @@ router.post('/delete-batch', (req, res) => __awaiter(void 0, void 0, void 0, fun
 router.delete('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const deleted = yield LongWeekendStats_model_1.default.destroy({ where: { id: req.params.id } });
-        if (deleted)
-            res.json({ success: true });
-        else
+        if (!deleted) {
             res.status(404).json({ error: 'No encontrado' });
+            return;
+        }
+        const user = yield models_1.User.findByPk(req.userId);
+        yield (0, activityLog_service_1.createActivityLog)({
+            user: (user === null || user === void 0 ? void 0 : user.email) || 'unknown',
+            action: 'Eliminó registro de fin de semana largo',
+            section: 'long-weekend-stats',
+            details: `Registro con ID ${req.params.id} eliminado`,
+        });
+        res.json({ success: true });
     }
     catch (err) {
         res.status(500).json({ error: 'Error eliminando el registro' });

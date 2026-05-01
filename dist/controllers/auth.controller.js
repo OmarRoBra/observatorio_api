@@ -17,10 +17,11 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const user_model_1 = __importDefault(require("../models/user.model"));
 const jwt_1 = require("../utils/jwt");
 const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
     try {
         const hashedPassword = yield bcrypt_1.default.hash(password, 10);
-        const user = yield user_model_1.default.create({ name, email, password: hashedPassword, role: "admin" });
+        const userRole = role === "admin" ? "admin" : "editor"; // por defecto editor si no es admin
+        const user = yield user_model_1.default.create({ name, email, password: hashedPassword, role: userRole });
         res.status(201).json({ message: 'User registered', user });
     }
     catch (error) {
