@@ -6,6 +6,8 @@ import { Request, Response } from 'express';
 import { Op } from 'sequelize';
 import HolidayStats from '../models/HolidayStats.model';
 import { insertHolidayStatsFromExcel } from '../services/uploadInfoExcell';
+import { createActivityLog } from '../services/activityLog.service';
+import { User } from '../models';
 const router = Router();
 
 router.post(
@@ -21,6 +23,13 @@ router.post(
       const data = readExcelFromBuffer(req.file.buffer);
 
       await insertHolidayStatsFromExcel(data);
+      const user = await User.findByPk((req as any).userId);
+      await createActivityLog({
+        user: user?.email || "unknow",
+        action: "Subio archivo excel",
+        module: "excel-feed",
+        details: `Se ha subido un archivo excel con el nombre ${req.file.originalname}`
+      })
 
       res.status(200).json({ message: `Archivo  procesado correctamente.` });
     } catch (error) {

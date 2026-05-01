@@ -11,6 +11,7 @@ import monthlyStatsRoutes from './routes/monthlyStats';
 import seasonStatsRoutes from './routes/seasonStats';
 import LongWeekendStatsRoutes from './routes/longWeekendStats.routes';
 import pdfsFrontRoutes from './routes/pdfsFront.routes';
+import activityLogRoutes from './routes/activityLog.routes';
 
 // Importar modelos para asegurar que se registren
 export * from './models/HolidayStats.model';
@@ -47,6 +48,7 @@ app.use('/monthly-stats', monthlyStatsRoutes);
 app.use('/season-stats', seasonStatsRoutes);
 app.use('/long-weekend-stats', LongWeekendStatsRoutes);
 app.use('/pdfs-front', pdfsFrontRoutes);
+app.use('/activity-logs', activityLogRoutes);
 
 
 async function initializeDatabase() {
