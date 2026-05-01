@@ -16,7 +16,7 @@ const router = (0, express_1.Router)();
 router.get("/", auth_middleware_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const logs = yield database_1.ActivityLog.findAll({
-            order: ["createdAt", "DESC"],
+            order: [["createdAt", "DESC"]],
             limit: 200,
         });
         res.json(logs);

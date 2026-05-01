@@ -7,7 +7,7 @@ const router = Router();
 router.get("/", authMiddleware, async (req, res) => {
     try {
         const logs = await ActivityLog.findAll({
-            order: ["createdAt", "DESC"],
+            order: [["createdAt", "DESC"]],
             limit: 200,
         });
         res.json(logs);
