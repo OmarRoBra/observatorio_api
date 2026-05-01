@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteUser = exports.updateUser = exports.getUser = exports.createUser = exports.getAllUsers = void 0;
 const user_model_1 = __importDefault(require("../models/user.model"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
 const getAllUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const users = yield user_model_1.default.findAll({
@@ -35,11 +36,12 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             res.status(400).json({ message: 'User already exists' });
             return;
         }
+        const hashedPassword = yield bcrypt_1.default.hash(password, 10);
         // Crear el usuario
         const user = yield user_model_1.default.create({
             name,
             email,
-            password, // Asumiendo que el modelo hashea la contraseña
+            password: hashedPassword,
             role: role || 'editor'
         });
         // Excluir la contraseña de la respuesta

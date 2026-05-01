@@ -13,7 +13,7 @@ const express_1 = require("express");
 const auth_middleware_1 = require("../middleware/auth.middleware");
 const models_1 = require("../models");
 const router = (0, express_1.Router)();
-router.get("/", auth_middleware_1.authMiddleware, auth_middleware_1.isAdmin, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/", auth_middleware_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const logs = yield models_1.ActivityLog.findAll({
             order: ["createdAt", "DESC"],

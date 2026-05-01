@@ -72,6 +72,15 @@ app.get('/health', (_req: Request, res: Response) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+app.get('/health/sync', async (_req: Request, res: Response) => {
+  try {
+    await sequelize.sync({ alter: true });
+    res.json({ status: 'success', message: 'Database synchronized successfully' });
+  } catch (error) {
+    res.status(500).json({ status: 'error', error: String(error) });
+  }
+});
+
 if (require.main === module) {
   app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
