@@ -12,6 +12,7 @@ import MonthlyStats from '../models/MonthlyStats.model';
 import SeasonStats  from '../models/SeasonStats.model';
 import LongWeekendStats from '../models/LongWeekendStats.model';
 import PdfFront from '../models/pdfFront.model';
+import ActivityLog from '../models/ActivityLog.model';
 
 dotenv.config();
 
@@ -41,8 +42,8 @@ sequelize.addModels([
   MonthlyStats,
   SeasonStats,
   LongWeekendStats,
-  PdfFront
-  
+  PdfFront,
+  ActivityLog
 ]);
 
 // (Opcional) Sincroniza las tablas si no usas migraciones
