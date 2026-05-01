@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import User from "../models/user.model";
 import bcrypt from "bcrypt";
+import { createActivityLog } from "../services/activityLog.service";
 
 export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -38,6 +39,15 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
     // Excluir la contraseña de la respuesta
     const userResponse = { ...user.toJSON() };
     delete userResponse.password;
+
+    // Registrar actividad
+    const creator = await User.findByPk((req as any).userId);
+    await createActivityLog({
+      user: creator?.email || 'unknown',
+      action: 'Creó usuario',
+      section: 'usuarios',
+      details: `Nuevo usuario creado: ${email} con rol ${role || 'editor'}`,
+    });
 
     res.status(201).json({ message: 'User created successfully', user: userResponse });
   } catch (error) {
@@ -79,6 +89,15 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
     user.email = email || user.email;
     await user.save();
 
+    // Registrar actividad
+    const updater = await User.findByPk((req as any).userId);
+    await createActivityLog({
+      user: updater?.email || 'unknown',
+      action: 'Editó usuario',
+      section: 'usuarios',
+      details: `Usuario ${user.email} actualizado`,
+    });
+
     res.json({ message: "User updated", user });
   } catch (error) {
     res.status(500).json({ message: "Error updating user", error });
@@ -96,7 +115,18 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
       return;
     }
 
+    const userEmail = user.email;
     await user.destroy();
+
+    // Registrar actividad
+    const deleter = await User.findByPk((req as any).userId);
+    await createActivityLog({
+      user: deleter?.email || 'unknown',
+      action: 'Eliminó usuario',
+      section: 'usuarios',
+      details: `Usuario eliminado: ${userEmail}`,
+    });
+
     res.json({ message: "User deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Error deleting user", error });

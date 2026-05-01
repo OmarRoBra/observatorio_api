@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteUser = exports.updateUser = exports.getUser = exports.createUser = exports.getAllUsers = void 0;
 const user_model_1 = __importDefault(require("../models/user.model"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const activityLog_service_1 = require("../services/activityLog.service");
 const getAllUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const users = yield user_model_1.default.findAll({
@@ -47,6 +48,14 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         // Excluir la contraseña de la respuesta
         const userResponse = Object.assign({}, user.toJSON());
         delete userResponse.password;
+        // Registrar actividad
+        const creator = yield user_model_1.default.findByPk(req.userId);
+        yield (0, activityLog_service_1.createActivityLog)({
+            user: (creator === null || creator === void 0 ? void 0 : creator.email) || 'unknown',
+            action: 'Creó usuario',
+            section: 'usuarios',
+            details: `Nuevo usuario creado: ${email} con rol ${role || 'editor'}`,
+        });
         res.status(201).json({ message: 'User created successfully', user: userResponse });
     }
     catch (error) {
@@ -83,6 +92,14 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         user.name = name || user.name;
         user.email = email || user.email;
         yield user.save();
+        // Registrar actividad
+        const updater = yield user_model_1.default.findByPk(req.userId);
+        yield (0, activityLog_service_1.createActivityLog)({
+            user: (updater === null || updater === void 0 ? void 0 : updater.email) || 'unknown',
+            action: 'Editó usuario',
+            section: 'usuarios',
+            details: `Usuario ${user.email} actualizado`,
+        });
         res.json({ message: "User updated", user });
     }
     catch (error) {
@@ -99,7 +116,16 @@ const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             res.status(404).json({ message: "User not found" });
             return;
         }
+        const userEmail = user.email;
         yield user.destroy();
+        // Registrar actividad
+        const deleter = yield user_model_1.default.findByPk(req.userId);
+        yield (0, activityLog_service_1.createActivityLog)({
+            user: (deleter === null || deleter === void 0 ? void 0 : deleter.email) || 'unknown',
+            action: 'Eliminó usuario',
+            section: 'usuarios',
+            details: `Usuario eliminado: ${userEmail}`,
+        });
         res.json({ message: "User deleted successfully" });
     }
     catch (error) {

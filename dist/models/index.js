@@ -3,20 +3,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ActivityLog = exports.News = exports.User = exports.sequelize = void 0;
-const sequelize_typescript_1 = require("sequelize-typescript");
+exports.PdfFront = exports.Inventory = exports.LongWeekendStats = exports.SeasonStats = exports.MonthlyStats = exports.HolidayStats = exports.ActivityLog = exports.News = exports.User = void 0;
 const user_model_1 = __importDefault(require("./user.model"));
 exports.User = user_model_1.default;
 const news_model_1 = __importDefault(require("./news.model"));
 exports.News = news_model_1.default;
 const ActivityLog_model_1 = __importDefault(require("./ActivityLog.model"));
 exports.ActivityLog = ActivityLog_model_1.default;
-const sequelize = new sequelize_typescript_1.Sequelize({
-    database: process.env.DB_NAME,
-    username: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    host: process.env.DB_HOST,
-    dialect: 'postgres',
-    models: [user_model_1.default, news_model_1.default],
-});
-exports.sequelize = sequelize;
+const HolidayStats_model_1 = __importDefault(require("./HolidayStats.model"));
+exports.HolidayStats = HolidayStats_model_1.default;
+const MonthlyStats_model_1 = __importDefault(require("./MonthlyStats.model"));
+exports.MonthlyStats = MonthlyStats_model_1.default;
+const SeasonStats_model_1 = __importDefault(require("./SeasonStats.model"));
+exports.SeasonStats = SeasonStats_model_1.default;
+const LongWeekendStats_model_1 = __importDefault(require("./LongWeekendStats.model"));
+exports.LongWeekendStats = LongWeekendStats_model_1.default;
+const inventory_model_1 = __importDefault(require("./inventory.model"));
+exports.Inventory = inventory_model_1.default;
+const pdfFront_model_1 = __importDefault(require("./pdfFront.model"));
+exports.PdfFront = pdfFront_model_1.default;

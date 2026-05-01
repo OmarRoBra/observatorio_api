@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { createActivityLog } from '../services/activityLog.service';
 import { authMiddleware, isAdmin } from '../middleware/auth.middleware';
-import { ActivityLog } from '../models';
+import ActivityLog from '../models/ActivityLog.model';
 const router = Router();
 
 router.get("/", authMiddleware, async (req, res) => {
@@ -12,8 +12,11 @@ router.get("/", authMiddleware, async (req, res) => {
         });
         res.json(logs);
     } catch (error) {
-        console.log(error)
-        res.status(500).json({ mesagge: "error al obtener los registros" })
+        console.error("ERROR AL OBTENER LOGS:", error);
+        res.status(500).json({ 
+            message: "error al obtener los registros", 
+            error: error instanceof Error ? error.message : String(error) 
+        });
     }
 
 })
