@@ -4,15 +4,15 @@ import { Sequelize } from 'sequelize-typescript';
 import dotenv from 'dotenv';
 import pg from 'pg';
 
-import Pdf          from '../models/inventory.model';
-import News         from '../models/news.model';
-import Users        from '../models/user.model';
-import Holidays     from '../models/HolidayStats.model';
-import MonthlyStats from '../models/MonthlyStats.model';
-import SeasonStats  from '../models/SeasonStats.model';
 import LongWeekendStats from '../models/LongWeekendStats.model';
 import PdfFront from '../models/pdfFront.model';
 import ActivityLog from '../models/ActivityLog.model';
+import News from '../models/news.model';
+import Users from '../models/user.model';
+import Holidays from '../models/HolidayStats.model';
+import MonthlyStats from '../models/MonthlyStats.model';
+import SeasonStats from '../models/SeasonStats.model';
+import Pdf from '../models/inventory.model';
 
 dotenv.config();
 
@@ -49,4 +49,16 @@ sequelize.addModels([
 // (Opcional) Sincroniza las tablas si no usas migraciones
 // sequelize.sync({ alter: true });
 
-export default sequelize;
+export { 
+  sequelize as default, 
+  sequelize,
+  Pdf,
+  Users,
+  News,
+  Holidays,
+  MonthlyStats,
+  SeasonStats,
+  LongWeekendStats,
+  PdfFront,
+  ActivityLog
+};

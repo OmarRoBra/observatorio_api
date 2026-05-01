@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { createActivityLog } from '../services/activityLog.service';
 import { authMiddleware, isAdmin } from '../middleware/auth.middleware';
-import ActivityLog from '../models/ActivityLog.model';
+import { ActivityLog } from '../config/database';
 const router = Router();
 
 router.get("/", authMiddleware, async (req, res) => {

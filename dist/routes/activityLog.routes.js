@@ -8,17 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const auth_middleware_1 = require("../middleware/auth.middleware");
-const ActivityLog_model_1 = __importDefault(require("../models/ActivityLog.model"));
+const database_1 = require("../config/database");
 const router = (0, express_1.Router)();
 router.get("/", auth_middleware_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const logs = yield ActivityLog_model_1.default.findAll({
+        const logs = yield database_1.ActivityLog.findAll({
             order: ["createdAt", "DESC"],
             limit: 200,
         });
