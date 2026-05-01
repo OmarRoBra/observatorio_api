@@ -4,7 +4,7 @@ import { authMiddleware, isAdmin } from '../middleware/auth.middleware';
 import { ActivityLog } from '../models';
 const router = Router();
 
-router.get("/", authMiddleware, isAdmin, async (req, res) => {
+router.get("/", authMiddleware, async (req, res) => {
     try {
         const logs = await ActivityLog.findAll({
             order: ["createdAt", "DESC"],
