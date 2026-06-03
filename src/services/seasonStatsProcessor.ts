@@ -27,7 +27,7 @@ function parseEuropeanNumber(val: any): number {
   if (str.includes('.')) {
     const parts = str.split('.');
     // Si todas las partes después de la primera tienen 3 dígitos, son miles
-    const allThree = parts.slice(1).every(p => p.length === 3);
+    const allThree = parts.slice(1).every((p: string) => p.length === 3);
     if (allThree && parts.length > 1) {
       return parseFloat(str.replace(/\./g, ''));
     }
