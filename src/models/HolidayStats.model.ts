@@ -29,7 +29,7 @@ export default class HolidayStats extends Model {
   @Column({ type: DataType.FLOAT, allowNull: false })
   density!: number;
 
-  @Column({ type: DataType.INTEGER, allowNull: false })
+  @Column({ type: DataType.INTEGER, allowNull: true, defaultValue: 0 })
   nights!: number;
 
   @Column({ type: DataType.INTEGER, allowNull: false })
@@ -44,7 +44,7 @@ export default class HolidayStats extends Model {
   @Column({ type: DataType.INTEGER, allowNull: false })
   touristFlow!: number;
 
-  @Column({ type: DataType.STRING, allowNull: false })
-  month!: string; // Ej: 'Febrero'
+  @Column({ type: DataType.STRING, allowNull: true, defaultValue: '' })
+  month!: string; // Ej: 'Febrero' — opcional, no siempre presente en el Excel
 
 }
