@@ -12,5 +12,11 @@
             "src": "/(.*)",
             "dest": "dist/index.js"
         }
+    ],
+    "crons": [
+        {
+            "path": "/health",
+            "schedule": "0 8 * * *"
+        }
     ]
-}
+}

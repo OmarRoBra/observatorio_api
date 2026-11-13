@@ -62,9 +62,14 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Hello, World!');
 });
 
-// Keep-alive: evita que Supabase pause el proyecto por inactividad
-app.get('/health', (_req: Request, res: Response) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+// Keep-alive: evita que Supabase pause el proyecto por inactividad haciendo una consulta real a la BD
+app.get('/health', async (_req: Request, res: Response) => {
+  try {
+    await sequelize.query('SELECT 1');
+    res.json({ status: 'ok', database: 'connected', timestamp: new Date().toISOString() });
+  } catch (error) {
+    res.status(500).json({ status: 'error', database: 'disconnected', error: String(error) });
+  }
 });
 
 app.get('/health/sync', async (_req: Request, res: Response) => {
